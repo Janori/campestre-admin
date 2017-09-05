@@ -1,0 +1,13 @@
+<md-toolbar color="primary" class="mat-elevation-z6">
+    Club Campestre Admin
+    <span class="icon-spacer"></span>
+    <a href="#" (click)="doLogout()"><md-icon>power_settings_new</md-icon></a>
+</md-toolbar>
+<md-sidenav-container>
+  <md-sidenav mode="side" opened="true">
+      <md-nav-list color="primary">
+           <a [routerLink]="['/', link.url]" md-list-item *ngFor="let link of links"><md-icon mdListIcon>{{ link.icon }}</md-icon> {{ link.title }} </a>
+      </md-nav-list>
+  </md-sidenav>
+  <div class="content"><router-outlet></router-outlet></div>
+</md-sidenav-container>
