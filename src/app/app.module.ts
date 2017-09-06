@@ -12,12 +12,16 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './dashboard/home/home.component';
+import { PartnersComponent } from './dashboard/partners/partners.component';
+import { PartnerCreateComponent } from './dashboard/partners/partner-create.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    HomeComponent
+    HomeComponent,
+    PartnersComponent,
+    PartnerCreateComponent
   ],
   imports: [
     BrowserModule,

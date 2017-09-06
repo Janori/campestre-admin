@@ -1,0 +1,56 @@
+<div class="partner-serach">
+    <md-icon>search</md-icon>
+    <md-form-field class="full-width">
+        <input mdInput placeholder="Buscar socios..." #filter>
+    </md-form-field>
+</div>
+
+<div class="example-container mat-elevation-z8">
+    <md-table #table [dataSource]="dataSource">
+
+   <!--- Note that these columns can be defined in any order.
+         The actual rendered columns are set as a property on the row definition" -->
+
+   <!-- ID Column -->
+   <ng-container mdColumnDef="userId">
+     <md-header-cell *mdHeaderCellDef> ID </md-header-cell>
+     <md-cell *mdCellDef="let row"> {{row.id}} </md-cell>
+   </ng-container>
+
+   <!-- Name Column -->
+   <ng-container mdColumnDef="name">
+     <md-header-cell *mdHeaderCellDef> Nombre </md-header-cell>
+     <md-cell *mdCellDef="let row"> {{row.name}} </md-cell>
+   </ng-container>
+
+   <ng-container mdColumnDef="phone">
+     <md-header-cell *mdHeaderCellDef> Teléfono </md-header-cell>
+     <md-cell *mdCellDef="let row"> {{row.phone}} </md-cell>
+   </ng-container>
+
+   <ng-container mdColumnDef="address">
+     <md-header-cell *mdHeaderCellDef> Dirección </md-header-cell>
+     <md-cell *mdCellDef="let row"> Calle {{row.address}} </md-cell>
+   </ng-container>
+
+   <ng-container mdColumnDef="details">
+       <md-header-cell *mdHeaderCellDef> Detalles </md-header-cell>
+       <md-cell *mdCellDef="let row"> <button md-raised-button (click)="openDialog(row.id)" color="primary">Ver</button> </md-cell>
+   </ng-container>
+
+   <ng-container mdColumnDef="createdAt">
+     <md-header-cell *mdHeaderCellDef> Miembro desde </md-header-cell>
+     <md-cell *mdCellDef="let row"> {{row.created_at | date:'medium'}} </md-cell>
+   </ng-container>
+
+   <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
+   <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
+ </md-table>
+<!--
+ <md-paginator #paginator
+                [length]="exampleDatabase.data.length"
+                [pageIndex]="0"
+                [pageSize]="25"
+                [pageSizeOptions]="[5, 10, 25, 100]">
+  </md-paginator> -->
+</div>
