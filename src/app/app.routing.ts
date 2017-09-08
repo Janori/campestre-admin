@@ -7,6 +7,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './dashboard/home/home.component';
 import { PartnersComponent } from './dashboard/partners/partners.component';
 
+import { PoolComponent } from './dashboard/pool/pool.component';
+
 const appRoutes : Routes = [
     // { path: 'login', component: LoginComponent },
     // { path: 'lockscreen', component: LockscreenComponent},
@@ -15,12 +17,8 @@ const appRoutes : Routes = [
         component: DashboardComponent,
         children: [
             { path: '', component: HomeComponent },
-            {
-                path: 'socios',
-                children: [
-                    { path: '', component: PartnersComponent }
-                ]
-            },
+            { path: 'socios', component: PartnersComponent },
+            { path: 'alberca', component: PoolComponent },
             { path: '**', component: HomeComponent }
         ]
     },

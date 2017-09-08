@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { routing, appRoutingProviders} from './app.routing';
@@ -14,6 +14,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './dashboard/home/home.component';
 import { PartnersComponent } from './dashboard/partners/partners.component';
 import { PartnerFormComponent } from './dashboard/partners/partner-form.component';
+import { PoolComponent } from './dashboard/pool/pool.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { PartnerFormComponent } from './dashboard/partners/partner-form.componen
     DashboardComponent,
     HomeComponent,
     PartnersComponent,
-    PartnerFormComponent
+    PartnerFormComponent,
+    PoolComponent
   ],
   entryComponents: [
       PartnerFormComponent
@@ -29,6 +31,7 @@ import { PartnerFormComponent } from './dashboard/partners/partner-form.componen
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     BrowserAnimationsModule,
     MaterialModule,
