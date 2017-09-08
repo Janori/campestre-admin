@@ -1,0 +1,99 @@
+<h2 md-dialog-title>Detalles de Usuario {{ data.user.name }}</h2>
+<md-dialog-content>
+    <!-- <form class="partner-form"> -->
+        <md-form-field class="full-width">
+            <input mdInput placeholder="Nombre" [(ngModel)]="data.user.name">
+        </md-form-field>
+        <md-form-field class="full-width">
+            <input mdInput placeholder="Telefono" [(ngModel)]="data.user.phone">
+        </md-form-field>
+        <md-form-field class="full-width">
+            <input mdInput placeholder="Dirección" [(ngModel)]="data.user.address">
+        </md-form-field>
+        <md-form-field class="full-width">
+            <input mdInput placeholder="RFID" [(ngModel)]="data.user.rfid">
+        </md-form-field>
+        <md-form-field class="full-width">
+            <input mdInput placeholder="Huella" [(ngModel)]="data.user.thumb">
+        </md-form-field>
+        <!-- <md-form-field class="full-width">
+            <input mdInput [mdDatepicker]="picker" placeholder="Miembro desde">
+            <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
+            <md-datepicker #picker></md-datepicker>
+        </md-form-field> -->
+        <div>
+            <h2 class="mat-h2">Pagos</h2>
+            <div class="example-container mat-elevation-z8">
+              <md-table [dataSource]="historialDataSource">
+
+                <!--- Note that these columns can be defined in any order.
+                      The actual rendered columns are set as a property on the row definition" -->
+
+                <!-- Position Column -->
+                <ng-container mdColumnDef="month">
+                  <md-header-cell *mdHeaderCellDef> Mes </md-header-cell>
+                  <md-cell *mdCellDef="let element"> {{element.month}} </md-cell>
+                </ng-container>
+
+                <!-- Position Column -->
+                <ng-container mdColumnDef="amount">
+                  <md-header-cell *mdHeaderCellDef> Cantidad </md-header-cell>
+                  <md-cell *mdCellDef="let element"> {{element.amount | currency:'MXN':true }} </md-cell>
+                </ng-container>
+
+                <ng-container mdColumnDef="status">
+                  <md-header-cell *mdHeaderCellDef> Estado </md-header-cell>
+                  <md-cell *mdCellDef="let element"> {{element.status }} </md-cell>
+                </ng-container>
+
+                <md-header-row *mdHeaderRowDef="historialdisplayedColumns"></md-header-row>
+                <md-row *mdRowDef="let row; columns: historialdisplayedColumns;"></md-row>
+              </md-table>
+            </div>
+            <br>
+            <h2 class="mat-h2">Accesos</h2>
+            <div class="example-container mat-elevation-z8">
+              <md-table [dataSource]="logDataSource">
+
+                <!--- Note that these columns can be defined in any order.
+                      The actual rendered columns are set as a property on the row definition" -->
+
+                <!-- Position Column -->
+                <ng-container mdColumnDef="date">
+                  <md-header-cell *mdHeaderCellDef> Fecha </md-header-cell>
+                  <md-cell *mdCellDef="let element"> {{element.date | date:'medium'}} </md-cell>
+                </ng-container>
+
+                <!-- Position Column -->
+                <!-- <ng-container mdColumnDef="amount">
+                  <md-header-cell *mdHeaderCellDef> Cantidad </md-header-cell>
+                  <md-cell *mdCellDef="let element"> {{element.amount | currency }} </md-cell>
+                </ng-container> -->
+
+                <ng-container mdColumnDef="type">
+                  <md-header-cell *mdHeaderCellDef> Tipo de registro </md-header-cell>
+                  <md-cell *mdCellDef="let element"> {{element.type }} </md-cell>
+                </ng-container>
+
+                <md-header-row *mdHeaderRowDef="logdisplayedColumns"></md-header-row>
+                <md-row *mdRowDef="let row; columns: logdisplayedColumns;"></md-row>
+              </md-table>
+            </div>
+            <br>
+            <h2 class="mat-h2">Expediente</h2>
+            <md-list>
+              <md-list-item *ngFor="let file of files">
+                <md-icon md-list-icon>note</md-icon>
+                <h4 md-line>{{file.name}}</h4>
+                <p md-line> {{file.updated | date}} </p>
+              </md-list-item>
+            </md-list>
+            <br>
+        </div>
+    <!-- </form> -->
+</md-dialog-content>
+<md-dialog-actions>
+  <button md-button md-dialog-close>Cancelar</button>
+  <!-- Can optionally provide a result for the closing dialog. -->
+  <button md-button [md-dialog-close]="true" color="primary">Aceptar</button>
+</md-dialog-actions>

@@ -35,7 +35,7 @@
 
    <ng-container mdColumnDef="details">
        <md-header-cell *mdHeaderCellDef> Detalles </md-header-cell>
-       <md-cell *mdCellDef="let row"> <button md-raised-button (click)="openDialog(row.id)" color="primary">Ver</button> </md-cell>
+       <md-cell *mdCellDef="let row"> <button md-raised-button (click)="openDialog(row)" color="primary">Ver</button> </md-cell>
    </ng-container>
 
    <ng-container mdColumnDef="createdAt">

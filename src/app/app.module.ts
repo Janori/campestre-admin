@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 
 import { routing, appRoutingProviders} from './app.routing';
 
-import {MaterialModule} from '@angular/material';
+import {MaterialModule, DateAdapter, NativeDateAdapter, MD_DATE_FORMATS} from '@angular/material';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -13,7 +13,7 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './dashboard/home/home.component';
 import { PartnersComponent } from './dashboard/partners/partners.component';
-import { PartnerCreateComponent } from './dashboard/partners/partner-create.component';
+import { PartnerFormComponent } from './dashboard/partners/partner-form.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,10 @@ import { PartnerCreateComponent } from './dashboard/partners/partner-create.comp
     DashboardComponent,
     HomeComponent,
     PartnersComponent,
-    PartnerCreateComponent
+    PartnerFormComponent
+  ],
+  entryComponents: [
+      PartnerFormComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +34,10 @@ import { PartnerCreateComponent } from './dashboard/partners/partner-create.comp
     MaterialModule,
     routing
   ],
-  providers: [appRoutingProviders],
+  providers: [appRoutingProviders,
+    {provide: DateAdapter, useClass: NativeDateAdapter},
+     {provide: MD_DATE_FORMATS, useValue: 'yyyy-mm-dd'}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

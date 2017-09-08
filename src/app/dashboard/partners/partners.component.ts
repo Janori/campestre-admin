@@ -1,9 +1,9 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import {MdDialog, MdDialogRef, MD_DIALOG_DATA} from '@angular/material';
+import { MdDialog, MdDialogRef, MD_DIALOG_DATA} from '@angular/material';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { PartnerCreateComponent } from './partner-create.component';
+import { PartnerFormComponent } from './partner-form.component';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
@@ -35,10 +35,10 @@ export class PartnersComponent implements OnInit {
               this.dataSource.filter = this.filter.nativeElement.value;
             });
     }
-    openDialog = (id: any): void => {
-        let dialogRef = this.dialog.open(PartnerCreateComponent, {
-         width: '250px',
-        //  data: { name: this.name, animal: this.animal }
+    openDialog = (user: any): void => {
+        let dialogRef = this.dialog.open(PartnerFormComponent, {
+            width: '700px',
+            data: { user: user }
        });
 
        dialogRef.afterClosed().subscribe(result => {
@@ -85,6 +85,8 @@ export interface UserData {
   color: string;
   phone: string;
   address: string;
+  rfid: string;
+  thumb: string;
   created_at: string;
 }
 
@@ -119,6 +121,8 @@ export class ExampleDatabase {
       color: COLORS[Math.round(Math.random() * (COLORS.length - 1))],
       phone: '33' + randomNumbers(8),
       address: STREET[Math.round(Math.random() * (STREET.length - 1))] + ' ' + randomNumbers(2),
+      rfid: '108006998800',
+      thumb: '0x0fsdf7f555hddasd7688j68d6766dgd',
       created_at: randomDate(new Date(2012, 0, 1), new Date()).toString()
     };
   }
