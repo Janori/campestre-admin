@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
+$primary--color: #3f51b5;
+
 html, body, material-app, md-sidenav-container, .content {
   margin: 0;
   width: 100%;

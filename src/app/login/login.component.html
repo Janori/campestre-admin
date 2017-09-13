@@ -1,0 +1,41 @@
+<div class="wrapper" [ngClass]="{'form-success':isLogging}">
+	<div class="container">
+		<h1></h1>
+
+    <button *ngIf="error" (click)="error=false"
+            type="button" class="btn btn-danger btn-sm">
+        Usuario o contraseña incorrecta
+        <i class="fa fa-times"></i>
+    </button>
+
+		<form (ngSubmit)="login(form)" #form="ngForm" class="form" [style.display]="displayForm" [ngClass]="{'step': isLogging}">
+			<input appSelectOnClick
+             type="text"
+             placeholder="Usuario"
+             name="user"
+             [(ngModel)]="usuario.user"
+             required
+              >
+			<input appSelectOnClick
+						 type="password"
+						 placeholder="Contraseña"
+						 name="secret"
+             [(ngModel)]="usuario.pass"
+             required>
+			<button type="submit">Ingresar</button>
+		</form>
+	</div>
+
+	<ul class="bg-bubbles">
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+</div>
