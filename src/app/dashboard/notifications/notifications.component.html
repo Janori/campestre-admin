@@ -1,0 +1,11 @@
+<h2 class="mat-h2">Comunicados</h2>
+<p>Envía notificaciones a los socios </p>
+<form [formGroup]="poolForm" (ngSubmit)="onSubmit()">
+    <md-form-field>
+        <input mdInput placeholder="Alberca 1 (C°)" formControlNam="firstPool" [formGroup]="poolForm">
+    </md-form-field>
+    <md-form-field>
+        <input mdInput placeholder="Alberca 2 (C°)" formControlNam="secondPool" [formGroup]="poolForm">
+    </md-form-field>
+    <button md-raised-button color="primary">Enviar</button>
+</form>

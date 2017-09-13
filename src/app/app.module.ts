@@ -15,6 +15,8 @@ import { HomeComponent } from './dashboard/home/home.component';
 import { PartnersComponent } from './dashboard/partners/partners.component';
 import { PartnerFormComponent } from './dashboard/partners/partner-form.component';
 import { PoolComponent } from './dashboard/pool/pool.component';
+import { NotificationsComponent } from './dashboard/notifications/notifications.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { PoolComponent } from './dashboard/pool/pool.component';
     HomeComponent,
     PartnersComponent,
     PartnerFormComponent,
-    PoolComponent
+    PoolComponent,
+    NotificationsComponent,
+    LoginComponent
   ],
   entryComponents: [
       PartnerFormComponent
