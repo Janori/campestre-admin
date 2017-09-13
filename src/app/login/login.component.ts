@@ -3,6 +3,7 @@ import { AuthService } from '../shared/services/auth.service';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 
+declare var lscache: any;
 
 @Component({
   selector: 'app-login',
@@ -38,16 +39,35 @@ export class LoginComponent implements OnInit {
       this.isLogging = true;
       setTimeout(()=>{
         this.displayForm = "none";
-        // this.authService.login(forma.value.user, forma.value.secret)
-        // .subscribe(res=>{
-        //   if(!res){
-        //     this.error = true;
-        //     this.isLogging = false;
-        //     this.displayForm = "block";
-        //   }else{
-        //     this.router.navigate(['/home']);
-        //   }
-        // });
+
+        var data:any;
+        let email = forma.value.user;
+        let secret = forma.value.secret;
+        if(email.indexOf("@") == -1){
+          data = {
+            "username":email,
+            "password":secret
+          }
+        }else{
+          data = {
+            "email":email,
+            "password": secret
+          };
+        }
+
+        this.authService.login(data)
+        .subscribe(result =>{
+            console.log(result);
+          if(!result.status) {
+                this.error = true;
+                this.isLogging = false;
+                this.displayForm = "block";
+          }
+          else {
+              lscache.set('authToken', result.data.token, result.data.ttl);
+              this.router.navigate(['/']);
+          }
+        });
 
       }, 1000)
     }

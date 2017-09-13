@@ -4,6 +4,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { routing, appRoutingProviders} from './app.routing';
+import { AuthService } from './shared/services/auth.service';
+import { AuthGuard } from './shared/security/auth.guard';
 
 import {MaterialModule, DateAdapter, NativeDateAdapter, MD_DATE_FORMATS} from '@angular/material';
 
@@ -17,6 +19,7 @@ import { PartnerFormComponent } from './dashboard/partners/partner-form.componen
 import { PoolComponent } from './dashboard/pool/pool.component';
 import { NotificationsComponent } from './dashboard/notifications/notifications.component';
 import { LoginComponent } from './login/login.component';
+import { EmployeesComponent } from './dashboard/employees/employees.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,8 @@ import { LoginComponent } from './login/login.component';
     PartnerFormComponent,
     PoolComponent,
     NotificationsComponent,
-    LoginComponent
+    LoginComponent,
+    EmployeesComponent
   ],
   entryComponents: [
       PartnerFormComponent
@@ -43,7 +47,8 @@ import { LoginComponent } from './login/login.component';
   ],
   providers: [appRoutingProviders,
     {provide: DateAdapter, useClass: NativeDateAdapter},
-     {provide: MD_DATE_FORMATS, useValue: 'yyyy-mm-dd'}
+     {provide: MD_DATE_FORMATS, useValue: 'yyyy-mm-dd'},
+     AuthService, AuthGuard
   ],
   bootstrap: [AppComponent]
 })

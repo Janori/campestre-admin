@@ -9,15 +9,15 @@ export class Service {
         if(!/localhost/.test(document.location.host))
             this.url = ''; // prod
         else
-            this.url = 'http://localhost:8000/'; // test
+            this.url = 'http://api.campestre.local/'; // test
     }
 
-    get headers() {
+    headers() {
         let headers = new Headers();
         headers.append("Content-Type", "application/json");
 
         if(lscache.get('authToken') !== null)
-            headers.append("Authorization", localStorage.getItem('authToken'));
+            headers.append("Authorization", lscache.get('authToken'));
 
         return headers;
     }
