@@ -9,7 +9,7 @@ export class Service {
         if(!/localhost/.test(document.location.host))
             this.url = ''; // prod
         else
-            this.url = 'http://api.campestre.local/'; // test
+            this.url = 'http://127.0.0.1:8000/'; // test
     }
 
     headers() {

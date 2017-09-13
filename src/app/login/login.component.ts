@@ -15,6 +15,7 @@ declare var lscache: any;
 export class LoginComponent implements OnInit {
   isLogging = false;
   error = false;
+  errorMsg = "";
   displayForm:string = "display";
 
   usuario:any = {
@@ -59,19 +60,25 @@ export class LoginComponent implements OnInit {
         .subscribe(result =>{
             console.log(result);
           if(!result.status) {
-                this.error = true;
-                this.isLogging = false;
-                this.displayForm = "block";
-          }
-          else {
+            this.errorMsg = "Usuario o contraseña incorrecta."
+            this.loginError();
+          }else {
               lscache.set('authToken', result.data.token, result.data.ttl);
               this.router.navigate(['/']);
           }
+        }, error=>{
+          this.errorMsg = "Ocurrió un error con el servidor.";
+          this.loginError();
         });
 
       }, 1000)
     }
   }
 
+  loginError(){
+    this.error = true;
+    this.isLogging = false;
+    this.displayForm = "block";
+  }
 
 }
