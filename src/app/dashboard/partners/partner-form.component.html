@@ -7,14 +7,31 @@
         <md-form-field class="full-width">
             <input mdInput placeholder="Telefono" [(ngModel)]="data.user.phone">
         </md-form-field>
+
+        <md-form-field class="full-width">
+            <input mdInput placeholder="Email" [(ngModel)]="data.user.email">
+        </md-form-field>
+
         <md-form-field class="full-width">
             <input mdInput placeholder="Dirección" [(ngModel)]="data.user.address">
         </md-form-field>
+
+        <md-form-field class="full-width">
+            <input mdInput placeholder="Tipo de sangre" [(ngModel)]="data.user.tipo_sangre">
+        </md-form-field>
+
         <md-form-field class="full-width">
             <input mdInput placeholder="RFID" [(ngModel)]="data.user.rfid">
         </md-form-field>
         <md-form-field class="full-width">
+            <input mdInput placeholder="Codigo" [(ngModel)]="data.user.code">
+        </md-form-field>
+        <md-form-field class="full-width">
             <input mdInput placeholder="Huella" [(ngModel)]="data.user.thumb">
+        </md-form-field>
+
+        <md-form-field class="full-width">
+            <input mdInput placeholder="Tipo de membresía" [(ngModel)]="data.user.tipo_membresia">
         </md-form-field>
         <!-- <md-form-field class="full-width">
             <input mdInput [mdDatepicker]="picker" placeholder="Miembro desde">

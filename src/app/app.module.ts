@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 
 import { routing, appRoutingProviders} from './app.routing';
 import { AuthService } from './shared/services/auth.service';
+import { PartnerService } from './shared/services/partner.service';
 import { AuthGuard } from './shared/security/auth.guard';
 
 import {MaterialModule, DateAdapter, NativeDateAdapter, MD_DATE_FORMATS} from '@angular/material';
@@ -48,7 +49,8 @@ import { EmployeesComponent } from './dashboard/employees/employees.component';
   providers: [appRoutingProviders,
     {provide: DateAdapter, useClass: NativeDateAdapter},
      {provide: MD_DATE_FORMATS, useValue: 'yyyy-mm-dd'},
-     AuthService, AuthGuard
+     AuthService, AuthGuard,
+     PartnerService
   ],
   bootstrap: [AppComponent]
 })

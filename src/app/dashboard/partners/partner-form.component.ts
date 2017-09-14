@@ -17,8 +17,9 @@ export class PartnerFormComponent implements OnInit {
     public files: any = [
         { name: 'PDF_AN_1397144.PDF', updated: new Date()}
     ];
-    
-    constructor(@Inject(MD_DIALOG_DATA) public data: any) { console.log(this.data.user);}
+
+    constructor(@Inject(MD_DIALOG_DATA) public data: any) {
+    }
 
     ngOnInit() {
     }

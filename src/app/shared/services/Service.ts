@@ -6,10 +6,10 @@ export class Service {
     public url: string;
 
     constructor() {
-        if(!/localhost/.test(document.location.host))
-            this.url = ''; // prod
-        else
-            this.url = 'http://127.0.0.1:8000/'; // test
+        /*if(!/localhost/.test(document.location.host))
+            this.url = 'http://system.campestrecelaya.mx/api/'; // prod
+        else*/
+            this.url = 'http://system.campestrecelaya.mx/api/'; // test
     }
 
     headers() {
