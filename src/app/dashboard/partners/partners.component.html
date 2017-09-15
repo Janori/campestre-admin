@@ -5,8 +5,8 @@
     </md-form-field>
 </div>
 
-<div class="example-container mat-elevation-z8">
-    <md-table #table [dataSource]="dataSource">
+<div>
+    <md-table #table [dataSource]="dataSource" class="mat-elevation-z8">
 
    <!--- Note that these columns can be defined in any order.
          The actual rendered columns are set as a property on the row definition" -->
@@ -55,4 +55,7 @@
                 [pageSize]="25"
                 [pageSizeOptions]="[5, 10, 25, 100]">
   </md-paginator>
+  <button md-fab class="btt-btn" color="primary" (click)="openDialog({})">
+      <md-icon class="md-24">add</md-icon>
+  </button>
 </div>

@@ -26,3 +26,12 @@ html, body, material-app, md-sidenav-container, .content {
         width: 100%;
     }
 }
+
+.btt-btn {
+    cursor: pointer;
+    position: fixed !important;
+    top: 15px;
+    right: 20px;
+    text-decoration: none;
+    outline-style: none;
+}

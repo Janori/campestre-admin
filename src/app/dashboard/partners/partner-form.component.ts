@@ -23,6 +23,7 @@ export class PartnerFormComponent implements OnInit {
     ];
 
     constructor(@Inject(MD_DIALOG_DATA) public data: any) {
+        console.log(this.data);
         this.bloodKinds = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
         this.subscriptionKinds = ['DUPLEX', 'FAMILIAR', 'FORANEA', 'INDIVIDUAL', 'INDIVIDUAL 50%', 'INDIVIDUAL 25-30', 'INDIVIDUAL 25-30 AL 50%', 'VERIFICAR'];
     }
@@ -38,9 +39,6 @@ export interface PaymentHistorial {
 }
 
 const paymentData: PaymentHistorial[] = [
-    {month: 'Junio', amount: '1600', status: 'Pagado' },
-    {month: 'Julio', amount: '1600', status: 'Pagado' },
-    {month: 'Agosto', amount: '1600', status: 'Pagado' },
     {month: 'Septiembre', amount: '1600', status: 'Pendiente' }
 ];
 
