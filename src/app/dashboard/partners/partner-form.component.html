@@ -16,23 +16,29 @@
             <input mdInput placeholder="Dirección" [(ngModel)]="data.user.address">
         </md-form-field>
 
-        <md-form-field class="full-width">
-            <input mdInput placeholder="Tipo de sangre" [(ngModel)]="data.user.tipo_sangre">
-        </md-form-field>
+        <md-select placeholder="Tipo de sangre" [(ngModel)]="data.user.tipo_sangre" class="full-width">
+            <md-option *ngFor="let bloodKind of bloodKinds" [value]="bloodKind">{{ bloodKind }}</md-option>
+        </md-select>
 
         <md-form-field class="full-width">
-            <input mdInput placeholder="RFID" [(ngModel)]="data.user.rfid">
+            <input mdInput placeholder="RFID" [(ngModel)]="data.user.rfid" type="password">
         </md-form-field>
+
         <md-form-field class="full-width">
             <input mdInput placeholder="Codigo" [(ngModel)]="data.user.code">
         </md-form-field>
-        <md-form-field class="full-width">
-            <input mdInput placeholder="Huella" [(ngModel)]="data.user.thumb">
-        </md-form-field>
 
-        <md-form-field class="full-width">
-            <input mdInput placeholder="Tipo de membresía" [(ngModel)]="data.user.tipo_membresia">
-        </md-form-field>
+        <div *ngIf="data.user.thumb != ''" class="form-group">
+            <em>Ya hay una huella resgistrada para este usuario. &nbsp;</em>
+            <button md-raised-button color="warn">Eliminar huella</button>
+        </div>
+        <div *ngIf="data.user.thumb == ''" class="form-group">
+            <em>No hay huella resgistrada para este usuario aún. &nbsp;</em>
+        </div>
+
+        <md-select placeholder="Tipo de membresía" [(ngModel)]="data.user.tipo_membresia" class="full-width">
+            <md-option *ngFor="let subscriptionKind of subscriptionKinds" [value]="subscriptionKind">{{ subscriptionKind }}</md-option>
+        </md-select>
         <!-- <md-form-field class="full-width">
             <input mdInput [mdDatepicker]="picker" placeholder="Miembro desde">
             <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>

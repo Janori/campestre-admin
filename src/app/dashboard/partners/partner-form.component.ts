@@ -14,11 +14,17 @@ export class PartnerFormComponent implements OnInit {
     historialDataSource = new PaymentDataSource();
     logdisplayedColumns = ['date',  'type'];
     logDataSource = new LogDataSource();
+
+    public bloodKinds: string[];
+    public subscriptionKinds: string[];
+
     public files: any = [
         { name: 'PDF_AN_1397144.PDF', updated: new Date()}
     ];
 
     constructor(@Inject(MD_DIALOG_DATA) public data: any) {
+        this.bloodKinds = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
+        this.subscriptionKinds = ['DUPLEX', 'FAMILIAR', 'FORANEA', 'INDIVIDUAL', 'INDIVIDUAL 50%', 'INDIVIDUAL 25-30', 'INDIVIDUAL 25-30 AL 50%', 'VERIFICAR'];
     }
 
     ngOnInit() {
