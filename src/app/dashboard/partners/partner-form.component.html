@@ -1,6 +1,10 @@
-<h2 md-dialog-title>Detalles de Usuario {{ data.member.name }}</h2>
+<h2 md-dialog-title>Detalles de usuario {{ data.member.nombre }}</h2>
 <md-dialog-content>
     <!-- <form class="partner-form"> -->
+        <md-select placeholder="Tipo de Miembro" [(ngModel)]="data.member.tipo" class="full-width form-group">
+            <md-option *ngFor="let memberKind of memberKinds" [value]="memberKind.value">{{ memberKind.name }}</md-option>
+        </md-select>
+
         <md-form-field class="full-width">
             <input mdInput placeholder="Nombre" [(ngModel)]="data.member.nombre">
         </md-form-field>
@@ -28,10 +32,10 @@
             <input mdInput placeholder="Codigo" [(ngModel)]="data.member.info.code">
         </md-form-field>
 
-        <p>huella dactilar</p>
+        <!-- <p>Huella dactilar</p> -->
         <div *ngIf="data.member.info.fmd != ''" class="form-group">
             <em>Ya hay una huella resgistrada para este usuario. &nbsp;</em>
-            <button md-raised-button color="warn">Eliminar huella</button>
+            <button md-raised-button color="warn" (click)="deleteFMD(data.member.id)">Eliminar huella</button>
         </div>
         <div *ngIf="data.member.info.fmd == ''" class="form-group">
             <em>No hay huella resgistrada para este usuario aún. &nbsp;</em>
@@ -42,7 +46,7 @@
         </md-select>
 
         <md-form-field class="full-width">
-          <input mdInput [mdDatepicker]="picker" placeholder="Miembro desde">
+          <input mdInput [mdDatepicker]="picker" placeholder="Fecha de nacimiento">
           <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
           <md-datepicker touchUi="true" #picker></md-datepicker>
         </md-form-field>

@@ -7,7 +7,7 @@ import { routing, appRoutingProviders} from './app.routing';
 import { AuthService } from './shared/services/auth.service';
 import { AuthGuard } from './shared/security/auth.guard';
 
-import { MaterialModule, MdNativeDateModule} from '@angular/material';
+import { MaterialModule, MdNativeDateModule, MD_DATE_FORMATS} from '@angular/material';
 import { LOCALE_ID } from '@angular/core';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -48,7 +48,7 @@ import { EmployeesComponent } from './dashboard/employees/employees.component';
     routing
   ],
   providers: [
-      {provide: LOCALE_ID, useValue: 'es-MX'},
+      { provide: LOCALE_ID, useValue: 'es-MX' },
       appRoutingProviders,
       AuthService,
       AuthGuard

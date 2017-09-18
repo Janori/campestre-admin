@@ -21,6 +21,7 @@ export class PartnerFormComponent implements OnInit {
 
     public bloodKinds: string[];
     public subscriptionKinds: string[];
+    public memberKinds: any[];
 
     public files: any = [
         { name: 'PDF_AN_1397144.PDF', updated: new Date()}
@@ -33,6 +34,10 @@ export class PartnerFormComponent implements OnInit {
         console.log(data.member);
         this.bloodKinds = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
         this.subscriptionKinds = ['DUPLEX', 'FAMILIAR', 'FORANEA', 'INDIVIDUAL', 'INDIVIDUAL 50%', 'INDIVIDUAL 25-30', 'INDIVIDUAL 25-30 AL 50%', 'VERIFICAR'];
+        this.memberKinds = [
+            { name: 'Titular', value: 'T'},
+            { name: 'Asociado', value: 'A'}
+        ];
     }
 
     ngOnInit() {
@@ -51,6 +56,19 @@ export class PartnerFormComponent implements OnInit {
 
     setData = (id: number) => {
         this.data.closeDialog(id);
+    }
+
+    deleteFMD = (id: number) => {
+        this._memberService.deleteFMD(id).subscribe(
+            result => {
+                this.data.member.info.fmd = '';
+                this._snackBar.open(result.msg, 'Aceptar', {
+                    duration: 2000,
+                });
+
+            },
+            error => { console.log(error); }
+        );
     }
 }
 

@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdDialog, MdDialogRef, MdPaginator, MD_DIALOG_DATA} from '@angular/material';
+import { MdDialog, MdDialogRef, MdPaginator, MD_DIALOG_DATA, MdSnackBar} from '@angular/material';
 
 import { PartnerFormComponent } from './partner-form.component';
 import { MemberService } from '../../shared/services';
@@ -31,6 +31,7 @@ export class PartnersComponent implements OnInit {
 
     constructor(
         public dialog: MdDialog,
+        private _snackBar: MdSnackBar,
         private _memberService: MemberService) {
             this.membersDatabase = new MembersDatabase(this._memberService);
     }
@@ -46,7 +47,10 @@ export class PartnersComponent implements OnInit {
             });
     }
 
-    openDialog = (member: Member): void => {
+    openDialog = (member?: Member): void => {
+        if(member == undefined)
+            member = new Member();
+
         let dialogRef = this.dialog.open(PartnerFormComponent, {
             width: '700px',
             data: {
@@ -58,8 +62,38 @@ export class PartnersComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
+            console.log(member);
             if(result == true) {
-
+                if(member.id == null) { // CREATE
+                    this._memberService.createMember(member).subscribe(
+                        result => {
+                            if(result.status)
+                                this._snackBar.open('Miembro creado con éxito', 'Aceptar', {
+                                    duration: 2000,
+                                });
+                            else
+                                this._snackBar.open(result.msg, 'Aceptar', {
+                                    duration: 2000,
+                                });
+                        },
+                        error => { console.log(error); }
+                    );
+                }
+                else { // EDIT
+                    this._memberService.editMember(member.id, member).subscribe(
+                        result => {
+                            if(result.status)
+                                this._snackBar.open('Miembro editado con éxito', 'Aceptar', {
+                                    duration: 2000,
+                                });
+                            else
+                                this._snackBar.open(result.msg, 'Aceptar', {
+                                    duration: 2000,
+                                });
+                        },
+                        error => { console.log(error); }
+                    );
+                }
             }
             else if(Number.isInteger(result)) {
                 this.openDialog(this.membersDatabase.data.slice().filter(item => {
