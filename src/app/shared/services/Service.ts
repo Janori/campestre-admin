@@ -12,7 +12,7 @@ export class Service {
             this.url = 'http://system.campestrecelaya.mx/api/'; // test
     }
 
-    headers() {
+    get headers() {
         let headers = new Headers();
         headers.append("Content-Type", "application/json");
 

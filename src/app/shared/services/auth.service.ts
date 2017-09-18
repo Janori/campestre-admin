@@ -23,8 +23,7 @@ export class AuthService extends Service {
 
 	login = (user: any) => {
 		let params = JSON.stringify(user);
-		let headers = this.headers();
-		return this._http.post(this.url + 'authenticate', params, { headers })
+		return this._http.post(this.url + 'authenticate', params, { headers: this.headers })
 						 .map(res => res.json());
     }
 
