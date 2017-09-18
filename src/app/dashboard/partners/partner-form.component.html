@@ -1,88 +1,123 @@
-<h2 md-dialog-title>Detalles de Usuario {{ data.user.name }}</h2>
+<h2 md-dialog-title>Detalles de Usuario {{ data.member.name }}</h2>
 <md-dialog-content>
     <!-- <form class="partner-form"> -->
         <md-form-field class="full-width">
-            <input mdInput placeholder="Nombre" [(ngModel)]="data.user.name">
+            <input mdInput placeholder="Nombre" [(ngModel)]="data.member.nombre">
         </md-form-field>
         <md-form-field class="full-width">
-            <input mdInput placeholder="Telefono" [(ngModel)]="data.user.phone">
+            <input mdInput placeholder="Telefono" [(ngModel)]="data.member.data.telefono">
         </md-form-field>
 
         <md-form-field class="full-width">
-            <input mdInput placeholder="Email" [(ngModel)]="data.user.email">
+            <input mdInput placeholder="Email" [(ngModel)]="data.member.data.email">
         </md-form-field>
 
         <md-form-field class="full-width">
-            <input mdInput placeholder="Dirección" [(ngModel)]="data.user.address">
+            <input mdInput placeholder="Dirección" [(ngModel)]="data.member.data.direccion">
         </md-form-field>
 
-        <md-select placeholder="Tipo de sangre" [(ngModel)]="data.user.tipo_sangre" class="full-width">
+        <md-select placeholder="Tipo de sangre" [(ngModel)]="data.member.data.tipo_sangre" class="full-width">
             <md-option *ngFor="let bloodKind of bloodKinds" [value]="bloodKind">{{ bloodKind }}</md-option>
         </md-select>
 
         <md-form-field class="full-width">
-            <input mdInput placeholder="RFID" [(ngModel)]="data.user.rfid" type="password">
+            <input mdInput placeholder="RFID" [(ngModel)]="data.member.info.rfid" type="password">
         </md-form-field>
 
         <md-form-field class="full-width">
-            <input mdInput placeholder="Codigo" [(ngModel)]="data.user.code">
+            <input mdInput placeholder="Codigo" [(ngModel)]="data.member.info.code">
         </md-form-field>
 
-        <div *ngIf="data.user.thumb != ''" class="form-group">
+        <p>huella dactilar</p>
+        <div *ngIf="data.member.info.fmd != ''" class="form-group">
             <em>Ya hay una huella resgistrada para este usuario. &nbsp;</em>
             <button md-raised-button color="warn">Eliminar huella</button>
         </div>
-        <div *ngIf="data.user.thumb == ''" class="form-group">
+        <div *ngIf="data.member.info.fmd == ''" class="form-group">
             <em>No hay huella resgistrada para este usuario aún. &nbsp;</em>
         </div>
 
-        <md-select placeholder="Tipo de membresía" [(ngModel)]="data.user.tipo_membresia" class="full-width">
+        <md-select placeholder="Tipo de membresía" [(ngModel)]="data.member.data.tipo_membresia" class="full-width">
             <md-option *ngFor="let subscriptionKind of subscriptionKinds" [value]="subscriptionKind">{{ subscriptionKind }}</md-option>
         </md-select>
-        <!-- <md-form-field class="full-width">
-            <input mdInput [mdDatepicker]="picker" placeholder="Miembro desde">
-            <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
-            <md-datepicker #picker></md-datepicker>
-        </md-form-field> -->
+
+        <md-form-field class="full-width">
+          <input mdInput [mdDatepicker]="picker" placeholder="Miembro desde">
+          <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
+          <md-datepicker touchUi="true" #picker></md-datepicker>
+        </md-form-field>
+
         <div>
             <h2 class="mat-h2">Pagos</h2>
-            <div class="example-container mat-elevation-z8" *ngIf="id in data.user">
-              <md-table [dataSource]="historialDataSource">
+            <div class="example-container mat-elevation-z8">
+                <md-table [dataSource]="historialDataSource">
+                    <ng-container mdColumnDef="month">
+                        <md-header-cell *mdHeaderCellDef> Mes </md-header-cell>
+                        <md-cell *mdCellDef="let element"> {{element.month}} </md-cell>
+                    </ng-container>
 
-                <!--- Note that these columns can be defined in any order.
-                      The actual rendered columns are set as a property on the row definition" -->
+                    <ng-container mdColumnDef="amount">
+                        <md-header-cell *mdHeaderCellDef> Cantidad </md-header-cell>
+                        <md-cell *mdCellDef="let element"> {{element.amount | currency:'MXN':true }} </md-cell>
+                    </ng-container>
 
-                <!-- Position Column -->
-                <ng-container mdColumnDef="month">
-                  <md-header-cell *mdHeaderCellDef> Mes </md-header-cell>
-                  <md-cell *mdCellDef="let element"> {{element.month}} </md-cell>
-                </ng-container>
+                    <ng-container mdColumnDef="status">
+                        <md-header-cell *mdHeaderCellDef> Estado </md-header-cell>
+                        <md-cell *mdCellDef="let element">
+                            <div *ngIf="element.status == 'Pendiente'">
+                                <button md-raised-button>Pagar</button>
+                            </div>
+                            <div *ngIf="element.status != 'Pendiente'">
+                                {{ element.status }}
+                            </div>
+                        </md-cell>
+                    </ng-container>
 
-                <!-- Position Column -->
-                <ng-container mdColumnDef="amount">
-                  <md-header-cell *mdHeaderCellDef> Cantidad </md-header-cell>
-                  <md-cell *mdCellDef="let element"> {{element.amount | currency:'MXN':true }} </md-cell>
-                </ng-container>
-
-                <ng-container mdColumnDef="status">
-                  <md-header-cell *mdHeaderCellDef> Estado </md-header-cell>
-                  <md-cell *mdCellDef="let element">
-                      <div *ngIf="element.status == 'Pendiente'">
-                          <button md-raised-button>Pagar</button>
-                      </div>
-                      <div *ngIf="element.status != 'Pendiente'">
-                          {{ element.status }}
-                      </div>
-                  </md-cell>
-                </ng-container>
-
-                <md-header-row *mdHeaderRowDef="historialdisplayedColumns"></md-header-row>
-                <md-row *mdRowDef="let row; columns: historialdisplayedColumns;"></md-row>
+                    <md-header-row *mdHeaderRowDef="historialdisplayedColumns"></md-header-row>
+                    <md-row *mdRowDef="let row; columns: historialdisplayedColumns;"></md-row>
               </md-table>
+        </div>
+        <br>
+        <!-- MÓDULO DE ASOCIADOS  -->
+        <div *ngIf="data.member.is('titular')">
+            <h2 class="mat-h2">Asociados</h2>
+            <div *ngIf="data.member.assoc.length > 0">
+                <table class="table mat-elevation-z8">
+                    <tr>
+                        <th>No. Credencial</th>
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                    <tr *ngFor="let member of data.member.assoc">
+                        <td>{{ member.data.code }}</td>
+                        <td>{{ member.nombre }}</td>
+                        <td><button md-raised-button (click)="setData(member.id)" color="primary">Editar <md-icon class="md-24">edit</md-icon></button></td>
+                    </tr>
+                </table>
             </div>
+            <div *ngIf="data.member.assoc.length == 0">
+                <em>Este miembro no tiene asociados registrados. &nbsp;</em>
+            </div>
+        </div>
+        <div *ngIf="data.member.is('asociado') && data.member.father?.id">
+            <h2 class="mat-h2">Usuario referenciado</h2>
+            <table class="table mat-elevation-z8">
+                <tr>
+                    <th>No. Credencial</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+                <tr>
+                    <td>{{ data.member.father.data.code }}</td>
+                    <td>{{ data.member.father.nombre }}</td>
+                    <td><button md-raised-button (click)="setData(data.member.father.id)" color="primary">Editar <md-icon class="md-24">edit</md-icon></button></td>
+                </tr>
+            </table>
+        </div>
+
             <br>
-            <h2 class="mat-h2" *ngIf="id in data.user">Expediente</h2>
-            <md-list *ngIf="id in data.user">
+            <h2 class="mat-h2">Expediente</h2>
+            <md-list>
               <md-list-item *ngFor="let file of files">
                 <md-icon md-list-icon>note</md-icon>
                 <h4 md-line>{{file.name}}</h4>

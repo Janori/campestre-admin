@@ -1,10 +1,13 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MdDialog, MdDialogRef, MdPaginator, MD_DIALOG_DATA} from '@angular/material';
+
+import { PartnerFormComponent } from './partner-form.component';
+import { MemberService } from '../../shared/services';
+import { Member } from '../../shared/models';
+
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { PartnerFormComponent } from './partner-form.component';
-import { PartnerService } from '../../shared/services/partner.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
@@ -15,22 +18,25 @@ import 'rxjs/add/observable/fromEvent';
 
 @Component({
   selector: 'app-partners',
-  templateUrl: './partners.component.html'
+  templateUrl: './partners.component.html',
+  providers: [ MemberService ]
 })
 export class PartnersComponent implements OnInit {
-    displayedColumns = ['userId', 'code', 'name', 'phone', 'email', 'details'];
-    exampleDatabase = new ExampleDatabase(this.partnerService);
-    dataSource: ExampleDataSource | null;
+    public displayedColumns = ['userId', 'code', 'name', 'phone', 'email', 'details'];
+    public dataSource: MembersDataSource;
+    public membersDatabase: MembersDatabase;
 
     @ViewChild('filter') filter: ElementRef;
     @ViewChild(MdPaginator) paginator: MdPaginator;
 
-    constructor(public dialog: MdDialog,
-                private partnerService:PartnerService) {}
+    constructor(
+        public dialog: MdDialog,
+        private _memberService: MemberService) {
+            this.membersDatabase = new MembersDatabase(this._memberService);
+    }
 
     ngOnInit() {
-
-        this.dataSource = new ExampleDataSource(this.exampleDatabase, this.paginator);
+        this.dataSource = new MembersDataSource(this.membersDatabase, this.paginator);
         Observable.fromEvent(this.filter.nativeElement, 'keyup')
             .debounceTime(150)
             .distinctUntilChanged()
@@ -39,139 +45,82 @@ export class PartnersComponent implements OnInit {
               this.dataSource.filter = this.filter.nativeElement.value;
             });
     }
-    openDialog = (user: any): void => {
+
+    openDialog = (member: Member): void => {
         let dialogRef = this.dialog.open(PartnerFormComponent, {
             width: '700px',
-            data: { user: user }
-       });
+            data: {
+                member: member,
+                closeDialog: (data: any) => {
+                    dialogRef.close(data);
+                }
+            }
+        });
 
-       dialogRef.afterClosed().subscribe(result => {
-         if(result){
-           let data = {
-              "nombre": user.name,
-              "tipo": null,
-              "info": {
-                  "pin": "",
-                  "rfid": user.rfid ? user.rfid : '',
-                  "fmd": user.thumb ? user.thumb : '' ,
-                  "code": user.code ? user.code : ''
-              },
-              "data": {
-                  "code": user.code ? user.code : '',
-                  "tipo_membresia": user.tipo_membresia ? user.tipo_membresia : '',
-                  "email": user.email ? user.email : '',
-                  "direccion": user.address ? user.address : '',
-                  "rfc": "XAXX010101000",
-                  "fecha_nacimiento": "2017-04-04 00:00:00",
-                  "tipo_sangre": user.tipo_sangre ? user.tipo_sangre : '',
-                  "celular": user.phone ? user.phone : '',
-                  "telefono": "0",
-                  "status": null
-              }
-          }
-          this.partnerService.updateUser(user.id, data).subscribe(res=>{
-            if(res.status){
-              console.log(res.data);
-            }else console.log("No guardado");
-          },error=>{
-            console.log(error);
-          });
-         }
-       });
+        dialogRef.afterClosed().subscribe(result => {
+            if(result == true) {
+
+            }
+            else if(Number.isInteger(result)) {
+                this.openDialog(this.membersDatabase.data.slice().filter(item => {
+                    return item.id == result;
+                })[0]);
+                return;
+            }
+        });
     }
 }
 
-export interface UserData {
-  id: string;
-  name: string;
-  progress: string;
-  code: string;
-  phone: string;
-  address: string;
-  rfid: string;
-  thumb: string;
-  created_at: string;
+export class MembersDatabase {
+    dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+    get data(): any[] { return this.dataChange.value; }
+
+    constructor(private _memberService: MemberService) {
+        this._memberService.getAllMembers().subscribe(
+            result => {
+                result.data.forEach(member => this.addMember(member));
+            },
+            error => {
+                console.log(error);
+            }
+        );
+    }
+
+    addMember(data: any) {
+        const copiedData = this.data.slice();
+        copiedData.push(new Member(data));
+        this.dataChange.next(copiedData);
+    }
 }
 
-/** An example database that the data source uses to retrieve data for the table. */
-export class ExampleDatabase {
-  /** Stream that emits whenever the data has been modified. */
-  dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  get data(): any[] { return this.dataChange.value; }
+export class MembersDataSource extends DataSource<any> {
+    public _filterChange = new BehaviorSubject('');
+    get filter(): string { return this._filterChange.value; }
+    set filter(filter: string) { this._filterChange.next(filter); }
 
-  constructor(private partnerService:PartnerService) {
-    // Fill up the database with 100 users.
-    this.partnerService.getAll().subscribe(res=>{
-      for(let d of res.data){
-        this.addUser(d);
-      }
-    }, error=>{
-      console.log(error);
-    });
-    //for (let i = 0; i < 20; i++) { this.addUser(); }
-  }
+    constructor(
+        private membersDatabase: MembersDatabase,
+        private _paginator: MdPaginator) {
+            super();
+    }
 
-  /** Adds a new user to the database. */
-  addUser(data:any) {
-    const copiedData = this.data.slice();
-    copiedData.push(this.createNewUser(data));
-    this.dataChange.next(copiedData);
-  }
+    connect(): Observable<Member[]> {
+        const displayDataChanges = [
+            this.membersDatabase.dataChange,
+            this._filterChange,
+            this._paginator.page,
+        ];
 
-  /** Builds and returns a new User. */
-  private createNewUser(data:any) {
+        return Observable.merge(...displayDataChanges).map(() => {
+            const data = this.membersDatabase.data.slice();
+            const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
 
-    return {
-      id: data.id,
-      name: data.nombre,
-      phone: data.data ? data.data.celular : '',
-      email: data.data ? data.data.email : '',
-      address: data.data ? data.data.direccion : '',
-      rfid: data.info ? data.info.rfid : '',
-      thumb: data.info ? data.info.fmd : '',
-      code: data.data ? data.info.code : '',
-      tipo_membresia: data.data ? data.data.tipo_membresia : '',
-      tipo_sangre: data.data ? data.data.tipo_sangre : '',
-    };
-  }
-}
+            return this.membersDatabase.data.slice().filter((item) => {
+                let searchStr = (item.id + item.nombre + item.info.code).toLowerCase();
+                return searchStr.indexOf(this.filter.toLowerCase()) != -1;
+            }).splice(startIndex, this._paginator.pageSize);
+        });
+    }
 
-/**
- * Data source to provide what data should be rendered in the table. Note that the data source
- * can retrieve its data in any way. In this case, the data source is provided a reference
- * to a common data base, ExampleDatabase. It is not the data source's responsibility to manage
- * the underlying data. Instead, it only needs to take the data and send the table exactly what
- * should be rendered.
- */
-export class ExampleDataSource extends DataSource<any> {
-  _filterChange = new BehaviorSubject('');
-  get filter(): string { return this._filterChange.value; }
-  set filter(filter: string) { this._filterChange.next(filter); }
-
-  constructor(private _exampleDatabase: ExampleDatabase,
-              private _paginator: MdPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<UserData[]> {
-    const displayDataChanges = [
-      this._exampleDatabase.dataChange,
-      this._filterChange,
-      this._paginator.page,
-    ];
-
-    return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._exampleDatabase.data.slice();
-
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
-
-      return this._exampleDatabase.data.slice().filter((item) => {
-        let searchStr = (item.code + item.name + item.correo).toLowerCase();
-        return searchStr.indexOf(this.filter.toLowerCase()) != -1;
-      }).splice(startIndex, this._paginator.pageSize);
-    });
-  }
-
-  disconnect() {}
+    disconnect() {}
 }
