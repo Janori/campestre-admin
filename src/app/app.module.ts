@@ -5,10 +5,10 @@ import { HttpModule } from '@angular/http';
 
 import { routing, appRoutingProviders} from './app.routing';
 import { AuthService } from './shared/services/auth.service';
-import { PartnerService } from './shared/services/partner.service';
 import { AuthGuard } from './shared/security/auth.guard';
 
-import {MaterialModule, DateAdapter, NativeDateAdapter, MD_DATE_FORMATS} from '@angular/material';
+import { MaterialModule, MdNativeDateModule} from '@angular/material';
+import { LOCALE_ID } from '@angular/core';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -44,13 +44,14 @@ import { EmployeesComponent } from './dashboard/employees/employees.component';
     HttpModule,
     BrowserAnimationsModule,
     MaterialModule,
+    MdNativeDateModule,
     routing
   ],
-  providers: [appRoutingProviders,
-    {provide: DateAdapter, useClass: NativeDateAdapter},
-     {provide: MD_DATE_FORMATS, useValue: 'yyyy-mm-dd'},
-     AuthService, AuthGuard,
-     PartnerService
+  providers: [
+      {provide: LOCALE_ID, useValue: 'es-MX'},
+      appRoutingProviders,
+      AuthService,
+      AuthGuard
   ],
   bootstrap: [AppComponent]
 })
