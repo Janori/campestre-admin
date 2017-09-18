@@ -19,14 +19,14 @@ export class Member {
     constructor(obj ?: any) {
         this.id = obj && obj.id || null;
         this.nombre = obj && obj.nombre || null;
-        this.tipo = obj && obj.tipo || null;
+        this.tipo = obj && obj.tipo || Member.KIND.OWNER;
 
-        this.info = 'info' in obj ? new MembersRel(obj.info) : new MembersRel();
-        this.data = 'data' in obj ? new MembersData(obj.data) : new MembersData();
+        this.info = obj && 'info' in obj ? new MembersRel(obj.info) : new MembersRel();
+        this.data = obj && 'data' in obj ? new MembersData(obj.data) : new MembersData();
 
         this.father = obj && obj.father || null;
 
-        if(Array.isArray(obj.assoc) && obj.assoc.length > 0)
+        if(obj && Array.isArray(obj.assoc) && obj.assoc.length > 0)
             obj.assoc.forEach(member => this.assoc.push(new Member(member)));
     }
 
