@@ -15,6 +15,7 @@ export class DashboardComponent implements OnInit {
             {url: 'comunicados', icon: 'notifications', title: 'Comunicados'},
             {url: 'socios', icon: 'person', title: 'Socios'},
             {url: 'empleados', icon: 'work', title: 'Empleados'},
+            {url: 'invitados', icon: 'person', title: 'Invitados'},
             {url: 'alberca', icon: 'pool', title: 'Alberca'}
         ];
     }

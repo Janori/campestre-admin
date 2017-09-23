@@ -1,7 +1,7 @@
 <h2 md-dialog-title>Detalles de usuario {{ data.member.nombre }}</h2>
 <md-dialog-content>
     <!-- <form class="partner-form"> -->
-        <md-select placeholder="Tipo de Miembro" [(ngModel)]="data.member.tipo" class="full-width form-group">
+        <md-select *ngIf="!data.member.is('empleado')" placeholder="Tipo de Miembro" [(ngModel)]="data.member.tipo" class="full-width form-group">
             <md-option *ngFor="let memberKind of memberKinds" [value]="memberKind.value">{{ memberKind.name }}</md-option>
         </md-select>
 
@@ -51,35 +51,29 @@
           <md-datepicker touchUi="true" #picker></md-datepicker>
         </md-form-field>
 
-        <div>
+        <div *ngIf="data.member.is('titular')">
             <h2 class="mat-h2">Pagos</h2>
-            <div class="example-container mat-elevation-z8">
-                <md-table [dataSource]="historialDataSource">
-                    <ng-container mdColumnDef="month">
-                        <md-header-cell *mdHeaderCellDef> Mes </md-header-cell>
-                        <md-cell *mdCellDef="let element"> {{element.month}} </md-cell>
-                    </ng-container>
-
-                    <ng-container mdColumnDef="amount">
-                        <md-header-cell *mdHeaderCellDef> Cantidad </md-header-cell>
-                        <md-cell *mdCellDef="let element"> {{element.amount | currency:'MXN':true }} </md-cell>
-                    </ng-container>
-
-                    <ng-container mdColumnDef="status">
-                        <md-header-cell *mdHeaderCellDef> Estado </md-header-cell>
-                        <md-cell *mdCellDef="let element">
-                            <div *ngIf="element.status == 'Pendiente'">
-                                <button md-raised-button>Pagar</button>
+            <div *ngIf="lastThreeMonths.length > 0">
+                <table class="table mat-elevation-z8">
+                    <tr>
+                        <th>Mes</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    <tr *ngFor="let payment of lastThreeMonths; let i = index">
+                        <td>{{ payment.label }}</td>
+                        <td>{{ payment.status }}</td>
+                        <td>
+                            <div *ngIf="payment.status == 'Pendiente'">
+                                <button md-raised-button color="warn" (click)="doPayment(payment, i)">Pagar</button>
                             </div>
-                            <div *ngIf="element.status != 'Pendiente'">
-                                {{ element.status }}
+                            <div *ngIf="payment.status != 'Pendiente'">
+                                <button md-raised-button disabled>Pagado</button>
                             </div>
-                        </md-cell>
-                    </ng-container>
-
-                    <md-header-row *mdHeaderRowDef="historialdisplayedColumns"></md-header-row>
-                    <md-row *mdRowDef="let row; columns: historialdisplayedColumns;"></md-row>
-              </md-table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
         <br>
         <!-- MÓDULO DE ASOCIADOS  -->
@@ -119,17 +113,16 @@
             </table>
         </div>
 
-            <br>
-            <h2 class="mat-h2">Expediente</h2>
-            <md-list>
-              <md-list-item *ngFor="let file of files">
-                <md-icon md-list-icon>note</md-icon>
-                <h4 md-line>{{file.name}}</h4>
-                <p md-line> {{file.updated | date}} </p>
-            </md-list-item><s></s>
-            </md-list>
-            <br>
-        </div>
+        <br>
+        <h2 class="mat-h2">Expediente</h2>
+        <md-list>
+          <md-list-item *ngFor="let file of files">
+            <md-icon md-list-icon>note</md-icon>
+            <h4 md-line>{{file.name}}</h4>
+            <p md-line> {{file.updated | date}} </p>
+        </md-list-item><s></s>
+        </md-list>
+        <br>
     <!-- </form> -->
 </md-dialog-content>
 <md-dialog-actions>

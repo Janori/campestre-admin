@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MdDialog, MdDialogRef, MdPaginator, MD_DIALOG_DATA, MdSnackBar} from '@angular/material';
+import { Router } from '@angular/router';
 
 import { PartnerFormComponent } from './partner-form.component';
 import { MemberService } from '../../shared/services';
@@ -32,8 +33,9 @@ export class PartnersComponent implements OnInit {
     constructor(
         public dialog: MdDialog,
         private _snackBar: MdSnackBar,
+        private _router:Router,
         private _memberService: MemberService) {
-            this.membersDatabase = new MembersDatabase(this._memberService);
+            this.membersDatabase = new MembersDatabase(this._memberService, this._router.url);
     }
 
     ngOnInit() {
@@ -48,8 +50,14 @@ export class PartnersComponent implements OnInit {
     }
 
     openDialog = (member?: Member): void => {
-        if(member == undefined)
-            member = new Member();
+        if(member == undefined) {
+            if(this._router.url.includes('socios'))
+                member = new Member();
+            else if(this._router.url.includes('empleados'))
+                member = new Member({ tipo: Member.KIND.EMPLOYEE });
+            else
+                member = new Member({ tipo: Member.KIND.GUEST });
+        }
 
         let dialogRef = this.dialog.open(PartnerFormComponent, {
             width: '700px',
@@ -62,7 +70,6 @@ export class PartnersComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            console.log(member);
             if(result == true) {
                 if(member.id == null) { // CREATE
                     this._memberService.createMember(member).subscribe(
@@ -109,15 +116,25 @@ export class MembersDatabase {
     dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
     get data(): any[] { return this.dataChange.value; }
 
-    constructor(private _memberService: MemberService) {
-        this._memberService.getAllMembers().subscribe(
-            result => {
-                result.data.forEach(member => this.addMember(member));
-            },
-            error => {
-                console.log(error);
-            }
-        );
+    constructor(
+        private _memberService: MemberService,
+        private _url: string) {
+
+            if(_url.includes('socios'))
+                this._memberService.getAllMembers().subscribe(
+                    result => { result.data.forEach(member => this.addMember(member)); },
+                    error => { console.log(error); }
+                );
+            else if(_url.includes('empleados'))
+                this._memberService.getAllEmployees().subscribe(
+                    result => { result.data.forEach(member => this.addMember(member)); },
+                    error => { console.log(error); }
+                );
+            else
+                this._memberService.getAllGuests().subscribe(
+                    result => { result.data.forEach(member => this.addMember(member)); },
+                    error => { console.log(error); }
+                );
     }
 
     addMember(data: any) {

@@ -19,7 +19,8 @@ const appRoutes : Routes = [
             { path: '', component: HomeComponent },
             { path: 'comunicados', component: NotificationsComponent },
             { path: 'socios', component: PartnersComponent },
-            { path: 'empleados', component: EmployeesComponent },
+            { path: 'empleados', component: PartnersComponent },
+            { path: 'invitados', component: PartnersComponent },
             { path: 'alberca', component: PoolComponent },
             { path: '**', component: HomeComponent }
         ],

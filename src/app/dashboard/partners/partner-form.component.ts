@@ -15,17 +15,16 @@ import 'rxjs/add/observable/of';
     providers: [ MemberService ]
 })
 export class PartnerFormComponent implements OnInit {
-    // @ViewChild(MdDatepicker) picker: MdDatepicker<Date>;
-    historialdisplayedColumns = ['month', 'amount', 'status'];
-    historialDataSource = new PaymentDataSource();
-
     public bloodKinds: string[];
     public subscriptionKinds: string[];
     public memberKinds: any[];
+    public lastThreeMonths: any[] = [];
 
     public files: any = [
         { name: 'PDF_AN_1397144.PDF', updated: new Date()}
     ];
+
+    private _months: string[];
 
     constructor(
         @Inject(MD_DIALOG_DATA) public data: any,
@@ -38,9 +37,12 @@ export class PartnerFormComponent implements OnInit {
             { name: 'Titular', value: 'T'},
             { name: 'Asociado', value: 'A'}
         ];
+
+        this._months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     }
 
     ngOnInit() {
+        this._calculateMonths();
         if(Number.isInteger(this.data.member.father)) {
             this._memberService.getMember(this.data.member.father).subscribe(
                 result => {
@@ -49,9 +51,41 @@ export class PartnerFormComponent implements OnInit {
                 error => { console.log(error); }
             )
         }
+
+        this._memberService.getHistorial(this.data.member.id).subscribe(
+            result => {
+                this._loadPayments(result.data);
+            },
+            error => { console.log(error); }
+        );
         this._snackBar.open('Miembro cargado con éxito', 'Aceptar', {
             duration: 2000,
         });
+    }
+
+    _calculateMonths = () => {
+        this.lastThreeMonths = [];
+
+        for(let i = 0; i < 3; i++) {
+            let date = new Date();
+            let label = '';
+
+            date.setMonth(date.getMonth() - i);
+            label = this._months[date.getMonth()] + ' ' + date.getFullYear();
+
+            this.lastThreeMonths.push({month: date, status: 'Pendiente', label: label});
+        }
+    }
+
+    _loadPayments = (data: any) => {
+        for(let historial of data) {
+            let date = new Date(historial.date);
+
+            this.lastThreeMonths.forEach((payment, i, payments) => {
+                if(payment.month.getMonth() == date.getMonth())
+                    payments[i].status = 'Pagado';
+            });
+        }
     }
 
     setData = (id: number) => {
@@ -70,24 +104,9 @@ export class PartnerFormComponent implements OnInit {
             error => { console.log(error); }
         );
     }
-}
 
-export interface PaymentHistorial {
-    month: string;
-    amount: string;
-    status: string;
-}
-
-const paymentData: PaymentHistorial[] = [
-    {month: 'Septiembre', amount: '1600', status: 'Pendiente' }
-];
-
-
-export class PaymentDataSource extends DataSource<any> {
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<PaymentHistorial[]> {
-    return Observable.of(paymentData);
-  }
-
-  disconnect() {}
+    doPayment = (data: any, index: number) => {
+        console.log(data, index);
+        data.status = 'Pagado';
+    }
 }

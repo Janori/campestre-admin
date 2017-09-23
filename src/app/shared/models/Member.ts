@@ -34,8 +34,8 @@ export class Member {
         switch(kind) {
             case 'titular': return this.tipo == Member.KIND.OWNER;
             case 'asociado': return this.tipo == Member.KIND.PARTNER;
-            case 'employee': return this.tipo == Member.KIND.EMPLOYEE;
-            case 'guest': return this.tipo == Member.KIND.GUEST;
+            case 'empleado': return this.tipo == Member.KIND.EMPLOYEE;
+            case 'invitado': return this.tipo == Member.KIND.GUEST;
             default: return false;
         }
     }

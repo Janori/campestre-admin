@@ -15,6 +15,16 @@ export class MemberService extends Service {
                          .map(res => res.json());
     }
 
+    getAllEmployees = () => {
+        return this._http.get(this.url + 'employees?from=0&count=6000', { headers: this.headers })
+                         .map(res => res.json());
+    }
+
+    getAllGuests = () => {
+        return this._http.get(this.url + 'guests?from=0&count=6000', { headers: this.headers })
+                         .map(res => res.json());
+    }
+
     getMember = (id: number) => {
         return this._http.get(this.url + `members/${id}`, { headers: this.headers })
                          .map(res => res.json());
@@ -32,6 +42,11 @@ export class MemberService extends Service {
 
     createMember = (data: any) => {
         return this._http.post(this.url + 'members', data, { headers: this.headers })
+                         .map(res => res.json());
+    }
+
+    getHistorial = (id: number) => {
+        return this._http.get(this.url + `members/${id}/historial`, { headers: this.headers })
                          .map(res => res.json());
     }
 }
