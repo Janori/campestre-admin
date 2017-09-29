@@ -8,7 +8,6 @@ import { HomeComponent } from './dashboard/home/home.component';
 import { PartnersComponent } from './dashboard/partners/partners.component';
 import { PoolComponent } from './dashboard/pool/pool.component';
 import { NotificationsComponent } from './dashboard/notifications/notifications.component';
-import { EmployeesComponent } from './dashboard/employees/employees.component';
 
 const appRoutes : Routes = [
     { path: 'login', component: LoginComponent },

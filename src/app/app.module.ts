@@ -20,7 +20,6 @@ import { PartnerFormComponent } from './dashboard/partners/partner-form.componen
 import { PoolComponent } from './dashboard/pool/pool.component';
 import { NotificationsComponent } from './dashboard/notifications/notifications.component';
 import { LoginComponent } from './login/login.component';
-import { EmployeesComponent } from './dashboard/employees/employees.component';
 
 @NgModule({
   declarations: [
@@ -31,8 +30,7 @@ import { EmployeesComponent } from './dashboard/employees/employees.component';
     PartnerFormComponent,
     PoolComponent,
     NotificationsComponent,
-    LoginComponent,
-    EmployeesComponent
+    LoginComponent
   ],
   entryComponents: [
       PartnerFormComponent
