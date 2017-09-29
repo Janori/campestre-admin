@@ -49,4 +49,9 @@ export class MemberService extends Service {
         return this._http.get(this.url + `members/${id}/historial`, { headers: this.headers })
                          .map(res => res.json());
     }
+
+    doPayment = (data: any) => {
+        return this._http.post(this.url + 'members/paymonth', data, { headers: this.headers })
+                         .map(res => res.json());
+    }
 }

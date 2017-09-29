@@ -35,7 +35,7 @@
         <!-- <p>Huella dactilar</p> -->
         <div *ngIf="data.member.info.fmd != ''" class="form-group">
             <em>Ya hay una huella resgistrada para este usuario. &nbsp;</em>
-            <button md-raised-button color="warn" (click)="deleteFMD(data.member.id)">Eliminar huella</button>
+            <!-- <button md-raised-button color="warn" (click)="deleteFMD(data.member.id)">Eliminar huella</button> -->
         </div>
         <div *ngIf="data.member.info.fmd == ''" class="form-group">
             <em>No hay huella resgistrada para este usuario aún. &nbsp;</em>
@@ -56,23 +56,30 @@
             <div *ngIf="lastThreeMonths.length > 0">
                 <table class="table mat-elevation-z8">
                     <tr>
-                        <th>Mes</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>Pagado hasta</th>
+                        <th>Cantidad</th>
+                        <!-- <th>Acciones</th> -->
                     </tr>
-                    <tr *ngFor="let payment of lastThreeMonths; let i = index">
-                        <td>{{ payment.label }}</td>
-                        <td>{{ payment.status }}</td>
-                        <td>
-                            <div *ngIf="payment.status == 'Pendiente'">
-                                <button md-raised-button color="warn" (click)="doPayment(payment, i)">Pagar</button>
-                            </div>
-                            <div *ngIf="payment.status != 'Pendiente'">
-                                <button md-raised-button disabled>Pagado</button>
-                            </div>
-                        </td>
+                    <tr>
+                        <td>{{ '2017-05-20' | date:'medium' }} </td>
+                        <td>{{ '0.00' | currency:'MXN':true }}</td>
                     </tr>
                 </table>
+                <div class="row">
+                    <div class="col-md-4">
+                        <md-form-field class="full-width">
+                            <input mdInput placeholder="Pagado hasta" type="text">
+                        </md-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <md-form-field class="full-width">
+                            <input mdInput placeholder="Cantidad" type="text">
+                        </md-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <button md-raised-button color="primary">Registrar pago</button>
+                    </div>
+                </div>
             </div>
         </div>
         <br>
@@ -112,9 +119,32 @@
                 </tr>
             </table>
         </div>
+        <div *ngIf="data.member.father == null">
+            <h2 class="mat-h2">Usuario referenciado</h2>
+            <form class="example-form">
+      <md-form-field class="example-full-width">
+        <input mdInput placeholder="State" aria-label="State" [mdAutocomplete]="auto" [formControl]="stateCtrl">
+        <md-autocomplete #auto="mdAutocomplete">
+          <md-option *ngFor="let state of filteredStates | async" [value]="state.name">
+            <img style="vertical-align:middle;" aria-hidden src="{{state.flag}}" height="25" />
+            <span>{{ state.name }}</span> |
+            <small>Population: {{state.population}}</small>
+          </md-option>
+        </md-autocomplete>
+      </md-form-field>
+
+      <br />
+
+      <md-slide-toggle
+        [checked]="stateCtrl.disabled"
+        (change)="stateCtrl.disabled ? stateCtrl.enable() : stateCtrl.disable()">
+        Disable Input?
+      </md-slide-toggle>
+    </form>
+        </div>
 
         <br>
-        <h2 class="mat-h2">Expediente</h2>
+        <!-- <h2 class="mat-h2">Expediente</h2>
         <md-list>
           <md-list-item *ngFor="let file of files">
             <md-icon md-list-icon>note</md-icon>
@@ -122,7 +152,7 @@
             <p md-line> {{file.updated | date}} </p>
         </md-list-item><s></s>
         </md-list>
-        <br>
+        <br> -->
     <!-- </form> -->
 </md-dialog-content>
 <md-dialog-actions>

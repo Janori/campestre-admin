@@ -1,4 +1,5 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild} from '@angular/core';
+import {FormControl} from '@angular/forms';
 
 import { MemberService } from '../../shared/services';
 import { Member } from '../../shared/models';
@@ -8,6 +9,8 @@ import { MD_DIALOG_DATA, MdDatepicker, MdSnackBar } from '@angular/material';
 import { DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/map';
 
 @Component({
     selector: 'app-partner-form',
@@ -19,12 +22,50 @@ export class PartnerFormComponent implements OnInit {
     public subscriptionKinds: string[];
     public memberKinds: any[];
     public lastThreeMonths: any[] = [];
+    public filteredMembers: Observable<string[]>;
+
+    public membersFilter: FormControl = new FormControl();
 
     public files: any = [
         { name: 'PDF_AN_1397144.PDF', updated: new Date()}
     ];
 
+
     private _months: string[];
+    private members: any = ['One',
+    'Two',
+    'Three'];
+
+    stateCtrl: FormControl;
+  filteredStates: Observable<any[]>;
+
+  states: any[] = [
+    {
+      name: 'Arkansas',
+      population: '2.978M',
+      // https://commons.wikimedia.org/wiki/File:Flag_of_Arkansas.svg
+      flag: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Flag_of_Arkansas.svg'
+    },
+    {
+      name: 'California',
+      population: '39.14M',
+      // https://commons.wikimedia.org/wiki/File:Flag_of_California.svg
+      flag: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_California.svg'
+    },
+    {
+      name: 'Florida',
+      population: '20.27M',
+      // https://commons.wikimedia.org/wiki/File:Flag_of_Florida.svg
+      flag: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Florida.svg'
+    },
+    {
+      name: 'Texas',
+      population: '27.47M',
+      // https://commons.wikimedia.org/wiki/File:Flag_of_Texas.svg
+      flag: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Texas.svg'
+    }
+  ];
+
 
     constructor(
         @Inject(MD_DIALOG_DATA) public data: any,
@@ -42,7 +83,16 @@ export class PartnerFormComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.stateCtrl = new FormControl();
+   this.filteredStates = this.stateCtrl.valueChanges
+       .startWith(null)
+       .map(state => state ? this.filterStates(state) : this.states.slice());
         this._calculateMonths();
+
+        this.filteredMembers = this.membersFilter.valueChanges
+            .startWith(null)
+            .map(val => val ? this.filter(val) : this.members.slice());
+
         if(Number.isInteger(this.data.member.father)) {
             this._memberService.getMember(this.data.member.father).subscribe(
                 result => {
@@ -62,6 +112,11 @@ export class PartnerFormComponent implements OnInit {
             duration: 2000,
         });
     }
+
+    filterStates(name: string) {
+    return this.states.filter(state =>
+      state.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
+  }
 
     _calculateMonths = () => {
         this.lastThreeMonths = [];
@@ -88,6 +143,11 @@ export class PartnerFormComponent implements OnInit {
         }
     }
 
+    filter = (val: string) : string[] => {
+        return this.members.filter(option =>
+            option.toLowerCase().indexOf(val.toLowerCase()) === 0);
+    }
+
     setData = (id: number) => {
         this.data.closeDialog(id);
     }
@@ -105,8 +165,19 @@ export class PartnerFormComponent implements OnInit {
         );
     }
 
-    doPayment = (data: any, index: number) => {
-        console.log(data, index);
-        data.status = 'Pagado';
+    doPayment = (id: number, payment: any) => {
+        let data = {
+            member_id: id,
+            month: payment.month.getFullYear() + '-' + ("0" + (payment.month.getMonth() + 1)).slice(-2)
+        };
+
+        this._memberService.doPayment(data).subscribe(
+            result => {
+                console.log(result);
+            },
+            error => { console.log(error); }
+        );
+        // payment.status = 'Pagado';
+
     }
 }
