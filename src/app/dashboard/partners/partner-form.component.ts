@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild} from '@angular/core';
-import {FormControl} from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { MemberService } from '../../shared/services';
 import { Member } from '../../shared/models';
@@ -21,15 +21,11 @@ export class PartnerFormComponent implements OnInit {
     public bloodKinds: string[];
     public subscriptionKinds: string[];
     public memberKinds: any[];
-    public lastThreeMonths: any[] = [];
     public filteredMembers: Observable<string[]>;
+    public lastPayment: any = null;
 
     public membersFilter: FormControl = new FormControl();
-
-    public files: any = [
-        { name: 'PDF_AN_1397144.PDF', updated: new Date()}
-    ];
-
+    public paymentForm: FormGroup;
 
     private _months: string[];
     private members: any = ['One',
@@ -70,8 +66,14 @@ export class PartnerFormComponent implements OnInit {
     constructor(
         @Inject(MD_DIALOG_DATA) public data: any,
         private _snackBar: MdSnackBar,
-        private _memberService: MemberService) {
-        console.log(data.member);
+        private _memberService: MemberService,
+        private _fb: FormBuilder) {
+        // console.log(data.member);
+        this.paymentForm = this._fb.group({
+            paid_up: [null, Validators.required],
+            paid_amount: [null, Validators.required]
+        });
+
         this.bloodKinds = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
         this.subscriptionKinds = ['DUPLEX', 'FAMILIAR', 'FORANEA', 'INDIVIDUAL', 'INDIVIDUAL 50%', 'INDIVIDUAL 25-30', 'INDIVIDUAL 25-30 AL 50%', 'VERIFICAR'];
         this.memberKinds = [
@@ -87,7 +89,6 @@ export class PartnerFormComponent implements OnInit {
    this.filteredStates = this.stateCtrl.valueChanges
        .startWith(null)
        .map(state => state ? this.filterStates(state) : this.states.slice());
-        this._calculateMonths();
 
         this.filteredMembers = this.membersFilter.valueChanges
             .startWith(null)
@@ -104,7 +105,7 @@ export class PartnerFormComponent implements OnInit {
 
         this._memberService.getHistorial(this.data.member.id).subscribe(
             result => {
-                this._loadPayments(result.data);
+                this.lastPayment = result.data;
             },
             error => { console.log(error); }
         );
@@ -116,31 +117,6 @@ export class PartnerFormComponent implements OnInit {
     filterStates(name: string) {
     return this.states.filter(state =>
       state.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
-  }
-
-    _calculateMonths = () => {
-        this.lastThreeMonths = [];
-
-        for(let i = 0; i < 3; i++) {
-            let date = new Date();
-            let label = '';
-
-            date.setMonth(date.getMonth() - i);
-            label = this._months[date.getMonth()] + ' ' + date.getFullYear();
-
-            this.lastThreeMonths.push({month: date, status: 'Pendiente', label: label});
-        }
-    }
-
-    _loadPayments = (data: any) => {
-        for(let historial of data) {
-            let date = new Date(historial.date);
-
-            this.lastThreeMonths.forEach((payment, i, payments) => {
-                if(payment.month.getMonth() == date.getMonth())
-                    payments[i].status = 'Pagado';
-            });
-        }
     }
 
     filter = (val: string) : string[] => {
@@ -165,19 +141,36 @@ export class PartnerFormComponent implements OnInit {
         );
     }
 
-    doPayment = (id: number, payment: any) => {
+    doPayment = () => {
+        if(!confirm('Está apunto de registrar un pago, ¿los datos son correctos?'))
+            return;
+
         let data = {
-            member_id: id,
-            month: payment.month.getFullYear() + '-' + ("0" + (payment.month.getMonth() + 1)).slice(-2)
-        };
+            member_id: this.data.member.id,
+            paid_up: this.paymentForm.get('paid_up').value,
+            paid_amount: this.paymentForm.get('paid_amount').value
+        }
+
+        data.paid_up = data.paid_up.toISOString().replace(/T.*/,'');
 
         this._memberService.doPayment(data).subscribe(
             result => {
-                console.log(result);
+                if(result.status) {
+                    this.lastPayment = result.data;
+                    this.lastPayment.payment_date = new Date();
+                    this.paymentForm.reset();
+                    this._snackBar.open(result.msg, 'Aceptar', {
+                        duration: 2000,
+                    });
+                }
+                else {
+                    this._snackBar.open(result.msg, 'Aceptar', {
+                        duration: 2000,
+                    });
+                }
             },
             error => { console.log(error); }
-        );
-        // payment.status = 'Pagado';
+        )
 
     }
 }

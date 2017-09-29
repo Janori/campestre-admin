@@ -53,33 +53,38 @@
 
         <div *ngIf="data.member.is('titular')">
             <h2 class="mat-h2">Pagos</h2>
-            <div *ngIf="lastThreeMonths.length > 0">
+            <div *ngIf="lastPayment">
                 <table class="table mat-elevation-z8">
                     <tr>
                         <th>Pagado hasta</th>
                         <th>Cantidad</th>
-                        <!-- <th>Acciones</th> -->
+                        <th>Fecha del pago</th>
                     </tr>
                     <tr>
-                        <td>{{ '2017-05-20' | date:'medium' }} </td>
-                        <td>{{ '0.00' | currency:'MXN':true }}</td>
+                        <td>{{ lastPayment.paid_up | date:'medium' }} </td>
+                        <td>{{ lastPayment.paid_amount | currency:'MXN':true }}</td>
+                        <td>{{ lastPayment.payment_date | date:'medium' }}</td>
                     </tr>
                 </table>
-                <div class="row">
-                    <div class="col-md-4">
-                        <md-form-field class="full-width">
-                            <input mdInput placeholder="Pagado hasta" type="text">
-                        </md-form-field>
+                <form [formGroup]="paymentForm" (ngSubmit)="doPayment()" novalidate>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <md-form-field class="full-width">
+                                <input mdInput placeholder="Pagado hasta" type="text" formControlName="paid_up" [formGroup]="paymentForm" [mdDatepicker]="paidUpPicker">
+                                <md-datepicker-toggle mdSuffix [for]="paidUpPicker"></md-datepicker-toggle>
+                                 <md-datepicker touchUi="true" #paidUpPicker></md-datepicker>
+                            </md-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <md-form-field class="full-width">
+                                <input mdInput placeholder="Cantidad" type="number" formControlName="paid_amount" [formGroup]="paymentForm">
+                            </md-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <button md-raised-button color="primary">Registrar pago</button>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <md-form-field class="full-width">
-                            <input mdInput placeholder="Cantidad" type="text">
-                        </md-form-field>
-                    </div>
-                    <div class="col-md-4">
-                        <button md-raised-button color="primary">Registrar pago</button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
         <br>
