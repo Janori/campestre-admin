@@ -124,28 +124,18 @@
                 </tr>
             </table>
         </div>
-        <div *ngIf="data.member.father == null">
+        <div *ngIf="data.member.is('asociado') && data.member.father == null">
             <h2 class="mat-h2">Usuario referenciado</h2>
-            <form class="example-form">
-      <md-form-field class="example-full-width">
-        <input mdInput placeholder="State" aria-label="State" [mdAutocomplete]="auto" [formControl]="stateCtrl">
-        <md-autocomplete #auto="mdAutocomplete">
-          <md-option *ngFor="let state of filteredStates | async" [value]="state.name">
-            <img style="vertical-align:middle;" aria-hidden src="{{state.flag}}" height="25" />
-            <span>{{ state.name }}</span> |
-            <small>Population: {{state.population}}</small>
-          </md-option>
-        </md-autocomplete>
-      </md-form-field>
-
-      <br />
-
-      <md-slide-toggle
-        [checked]="stateCtrl.disabled"
-        (change)="stateCtrl.disabled ? stateCtrl.enable() : stateCtrl.disable()">
-        Disable Input?
-      </md-slide-toggle>
-    </form>
+            <form>
+                <md-form-field class="full-width">
+                    <input mdInput placeholder="Teclee nombre o no. credencial..." aria-label="State" [mdAutocomplete]="auto" [formControl]="stateCtrl">
+                    <md-autocomplete #auto="mdAutocomplete" [displayWith]="nombre">
+                        <md-option *ngFor="let state of filteredStates | async" [value]="state.id">
+                            <span>{{ state.nombre }}</span>
+                        </md-option>
+                    </md-autocomplete>
+                </md-form-field>
+            </form>
         </div>
 
         <br>

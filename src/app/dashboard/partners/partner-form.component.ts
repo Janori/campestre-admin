@@ -28,40 +28,10 @@ export class PartnerFormComponent implements OnInit {
     public paymentForm: FormGroup;
 
     private _months: string[];
-    private members: any = ['One',
-    'Two',
-    'Three'];
+    private _members: any[] = [];
 
-    stateCtrl: FormControl;
-  filteredStates: Observable<any[]>;
-
-  states: any[] = [
-    {
-      name: 'Arkansas',
-      population: '2.978M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_Arkansas.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Flag_of_Arkansas.svg'
-    },
-    {
-      name: 'California',
-      population: '39.14M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_California.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_California.svg'
-    },
-    {
-      name: 'Florida',
-      population: '20.27M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_Florida.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Florida.svg'
-    },
-    {
-      name: 'Texas',
-      population: '27.47M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_Texas.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Texas.svg'
-    }
-  ];
-
+    public stateCtrl: FormControl;
+    public filteredStates: Observable<any[]>;
 
     constructor(
         @Inject(MD_DIALOG_DATA) public data: any,
@@ -84,15 +54,17 @@ export class PartnerFormComponent implements OnInit {
         this._months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.stateCtrl = new FormControl();
-   this.filteredStates = this.stateCtrl.valueChanges
-       .startWith(null)
-       .map(state => state ? this.filterStates(state) : this.states.slice());
-
-        this.filteredMembers = this.membersFilter.valueChanges
+        this.filteredStates = this.stateCtrl.valueChanges
             .startWith(null)
-            .map(val => val ? this.filter(val) : this.members.slice());
+            .map(value => {
+                let run = async () => { this._members = await this._memberService.membersFilter(value); }
+                run();
+                console.log(this._members);
+                return this._members;
+
+            });
 
         if(Number.isInteger(this.data.member.father)) {
             this._memberService.getMember(this.data.member.father).subscribe(
@@ -112,16 +84,6 @@ export class PartnerFormComponent implements OnInit {
         this._snackBar.open('Miembro cargado con éxito', 'Aceptar', {
             duration: 2000,
         });
-    }
-
-    filterStates(name: string) {
-    return this.states.filter(state =>
-      state.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
-    }
-
-    filter = (val: string) : string[] => {
-        return this.members.filter(option =>
-            option.toLowerCase().indexOf(val.toLowerCase()) === 0);
     }
 
     setData = (id: number) => {

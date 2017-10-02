@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { Service } from './Service';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class MemberService extends Service {
@@ -53,5 +54,10 @@ export class MemberService extends Service {
     doPayment = (data: any) => {
         return this._http.post(this.url + 'members/paymonth', data, { headers: this.headers })
                          .map(res => res.json());
+    }
+
+    async membersFilter(value: string) {
+        const response = await this._http.get(this.url + 'members?from=0&count=10&query=' + value, { headers: this.headers }).toPromise();
+        return response.json().data;
     }
 }
