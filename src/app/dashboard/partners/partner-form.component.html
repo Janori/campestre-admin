@@ -1,7 +1,7 @@
 <h2 md-dialog-title>Detalles de usuario {{ data.member.nombre }}</h2>
 <md-dialog-content>
     <!-- <form class="partner-form"> -->
-        <md-select *ngIf="!data.member.is('empleado')" placeholder="Tipo de Miembro" [(ngModel)]="data.member.tipo" class="full-width form-group">
+        <md-select *ngIf="data.member.is('titular') || data.member.is('asociado')" placeholder="Tipo de Miembro" [(ngModel)]="data.member.tipo" class="full-width form-group">
             <md-option *ngFor="let memberKind of memberKinds" [value]="memberKind.value">{{ memberKind.name }}</md-option>
         </md-select>
 
@@ -29,7 +29,7 @@
         </md-form-field>
 
         <md-form-field class="full-width">
-            <input mdInput placeholder="Codigo" [(ngModel)]="data.member.info.code">
+            <input mdInput placeholder="No. credencial" [(ngModel)]="data.member.info.code">
         </md-form-field>
 
         <!-- <p>Huella dactilar</p> -->
@@ -120,7 +120,10 @@
                 <tr>
                     <td>{{ data.member.father.data.code }}</td>
                     <td>{{ data.member.father.nombre }}</td>
-                    <td><button md-raised-button (click)="setData(data.member.father.id)" color="primary">Editar <md-icon class="md-24">edit</md-icon></button></td>
+                    <td>
+                        <button md-raised-button (click)="setData(data.member.father.id)" color="primary">Editar <md-icon class="md-24">edit</md-icon></button>
+                        <button md-raised-button (click)="unsetRelation(data.member.father.id)" color="warn"><md-icon class="md-24">delete</md-icon></button>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -128,10 +131,10 @@
             <h2 class="mat-h2">Usuario referenciado</h2>
             <form>
                 <md-form-field class="full-width">
-                    <input mdInput placeholder="Teclee nombre o no. credencial..." aria-label="State" [mdAutocomplete]="auto" [formControl]="stateCtrl">
-                    <md-autocomplete #auto="mdAutocomplete" [displayWith]="nombre">
-                        <md-option *ngFor="let state of filteredStates | async" [value]="state.id">
-                            <span>{{ state.nombre }}</span>
+                    <input mdInput placeholder="Teclee nombre o no. credencial..." aria-label="Member" [mdAutocomplete]="auto" [formControl]="memberCtrl">
+                    <md-autocomplete #auto="mdAutocomplete" (optionSelected)="setRelation($event)">
+                        <md-option *ngFor="let member of filteredMembers | async" [value]="member.id">
+                            <span>{{ member.nombre }}</span>
                         </md-option>
                     </md-autocomplete>
                 </md-form-field>
@@ -139,6 +142,35 @@
         </div>
 
         <br>
+        <div *ngIf="data.member.id && data.member.is('invitado')">
+            <h2 class="mat-h2">Usuarios referenciados</h2>
+            <table class="table mat-elevation-z8">
+                <tr>
+                    <th>No. Credencial</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+                <tr *ngFor="let member of referencedMembers">
+                    <td>{{ member.data.code }}</td>
+                    <td>{{ member.nombre }}</td>
+                    <td>
+                        <button md-raised-button (click)="unsetGuestRelation(member.id)" color="warn"><md-icon class="md-24">delete</md-icon></button>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <br>
+            <form>
+                <md-form-field class="full-width">
+                    <input mdInput placeholder="Teclee nombre o no. credencial..." aria-label="Member" [mdAutocomplete]="auto" [formControl]="memberCtrl">
+                    <md-autocomplete #auto="mdAutocomplete" (optionSelected)="setGuestRelation($event)">
+                        <md-option *ngFor="let member of filteredMembers | async" [value]="member.id">
+                            <span>{{ member.nombre }}</span>
+                        </md-option>
+                    </md-autocomplete>
+                </md-form-field>
+            </form>
+        </div>
         <!-- <h2 class="mat-h2">Expediente</h2>
         <md-list>
           <md-list-item *ngFor="let file of files">

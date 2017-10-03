@@ -60,4 +60,29 @@ export class MemberService extends Service {
         const response = await this._http.get(this.url + 'members?from=0&count=10&query=' + value, { headers: this.headers }).toPromise();
         return response.json().data;
     }
+
+    setRelation = (member_id: number, ref_id: number) => {
+        return this._http.put(this.url + `members/${member_id}/setrel/${ref_id}`, null, { headers: this.headers })
+                         .map(res => res.json());
+    }
+
+    unsetRelation = (member_id: number) => {
+        return this._http.put(this.url + `members/${member_id}/unsetrel`, null, { headers: this.headers })
+                         .map(res => res.json());
+    }
+
+    setGuestRelation = (member_id: number, ref_id: number) => {
+        return this._http.post(this.url + `guests/${member_id}/setrel/${ref_id}`, null, { headers: this.headers })
+                         .map(res => res.json());
+    }
+
+    unsetGuestRelation = (member_id: number, ref_id: number) => {
+        return this._http.put(this.url + `guests/${member_id}/unsetrel/${ref_id}`, null, { headers: this.headers})
+                         .map(res => res.json());
+    }
+
+    getHosts = (member_id: number) => {
+        return this._http.get(this.url + `guests/${member_id}/hosts`,{ headers: this.headers })
+                          .map(res => res.json());
+    }
 }

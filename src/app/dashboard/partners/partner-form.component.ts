@@ -21,24 +21,24 @@ export class PartnerFormComponent implements OnInit {
     public bloodKinds: string[];
     public subscriptionKinds: string[];
     public memberKinds: any[];
-    public filteredMembers: Observable<string[]>;
     public lastPayment: any = null;
 
-    public membersFilter: FormControl = new FormControl();
     public paymentForm: FormGroup;
+
+    public memberCtrl: FormControl = new FormControl();
+    public filteredMembers: Observable<any[]>;
+
+    public referencedMembers: any[] = [];
 
     private _months: string[];
     private _members: any[] = [];
-
-    public stateCtrl: FormControl;
-    public filteredStates: Observable<any[]>;
 
     constructor(
         @Inject(MD_DIALOG_DATA) public data: any,
         private _snackBar: MdSnackBar,
         private _memberService: MemberService,
         private _fb: FormBuilder) {
-        // console.log(data.member);
+        console.log(data.member);
         this.paymentForm = this._fb.group({
             paid_up: [null, Validators.required],
             paid_amount: [null, Validators.required]
@@ -55,16 +55,23 @@ export class PartnerFormComponent implements OnInit {
     }
 
     async ngOnInit() {
-        this.stateCtrl = new FormControl();
-        this.filteredStates = this.stateCtrl.valueChanges
+        this.filteredMembers = this.memberCtrl.valueChanges
             .startWith(null)
             .map(value => {
                 let run = async () => { this._members = await this._memberService.membersFilter(value); }
                 run();
-                console.log(this._members);
-                return this._members;
 
+                return this._members;
             });
+
+        if(this.data.member.is('invitado')) {
+            this._memberService.getHosts(this.data.member.id).subscribe(
+                result => {
+                    this.referencedMembers = result.data;
+                },
+                error => console.log(error)
+            )
+        }
 
         if(Number.isInteger(this.data.member.father)) {
             this._memberService.getMember(this.data.member.father).subscribe(
@@ -88,6 +95,78 @@ export class PartnerFormComponent implements OnInit {
 
     setData = (id: number) => {
         this.data.closeDialog(id);
+    }
+
+    setRelation = ($event) => {
+        let ref_id      = $event.option.value;
+        let member_id   = this.data.member.id;
+
+        this._memberService.setRelation(member_id, ref_id).subscribe(
+            result => {
+                this._snackBar.open(result.msg, 'Aceptar', {
+                    duration: 2000,
+                });
+
+                if(result.status)
+                    this.data.member.father = new Member(result.data);
+            },
+            error => console.log(error)
+        )
+    }
+
+    unsetRelation = (member_id: number) => {
+        if(!confirm('Estás apunto de eliminar la relación con este miembro'))
+            return;
+
+        this._memberService.unsetRelation(this.data.member.id).subscribe(
+            result => {
+                this._snackBar.open(result.msg, 'Aceptar', {
+                    duration: 2000,
+                });
+
+                if(result.status) {
+                    this.data.member.tipo = 'T';
+                    this.data.member.father = null;
+                }
+            },
+            error => console.log(error)
+        )
+    }
+
+    setGuestRelation = ($event) => {
+        let ref_id      = $event.option.value;
+        let member_id   = this.data.member.id;
+
+        this._memberService.setGuestRelation(member_id, ref_id).subscribe(
+            result => {
+                this._snackBar.open(result.msg, 'Aceptar', {
+                    duration: 2000,
+                });
+
+                if(result.status)
+                    this.referencedMembers.push(result.data);
+            },
+            error => console.log(error)
+        );
+    }
+
+    unsetGuestRelation = (ref_id: number) => {
+        if(!confirm('Estás apunto de eliminar la relación con este miembro'))
+            return;
+
+        this._memberService.unsetGuestRelation(this.data.member.id, ref_id).subscribe(
+            result => {
+                this._snackBar.open(result.msg, 'Aceptar', {
+                    duration: 2000,
+                });
+
+                if(result.status) {
+                    this.data.member.tipo = 'T';
+                    this.data.member.father = null;
+                }
+            },
+            error => console.log(error)
+        )
     }
 
     deleteFMD = (id: number) => {
