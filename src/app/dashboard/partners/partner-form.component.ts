@@ -161,8 +161,9 @@ export class PartnerFormComponent implements OnInit {
                 });
 
                 if(result.status) {
-                    this.data.member.tipo = 'T';
-                    this.data.member.father = null;
+                    this.referencedMembers = this.referencedMembers.filter(member => {
+                        return member.id != ref_id;
+                    });
                 }
             },
             error => console.log(error)
