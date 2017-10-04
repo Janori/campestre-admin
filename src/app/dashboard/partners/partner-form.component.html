@@ -51,7 +51,7 @@
           <md-datepicker touchUi="true" #picker></md-datepicker>
         </md-form-field>
 
-        <div *ngIf="data.member.is('titular')">
+        <div *ngIf="data.member.id && (data.member.is('titular') || data.member.is('invitado'))">
             <h2 class="mat-h2">Pagos</h2>
             <div *ngIf="lastPayment">
                 <table class="table mat-elevation-z8">
