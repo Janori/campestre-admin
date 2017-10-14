@@ -1,6 +1,11 @@
 <h2 md-dialog-title>Detalles de usuario {{ data.member.nombre }}</h2>
 <md-dialog-content>
     <!-- <form class="partner-form"> -->
+
+        <md-select placeholder="Estado" [(ngModel)]="data.member.data.status" class="full-width form-group">
+            <md-option *ngFor="let status of _status" [value]="status">{{ status }}</md-option>
+        </md-select>
+
         <md-select *ngIf="data.member.is('titular') || data.member.is('asociado')" placeholder="Tipo de Miembro" [(ngModel)]="data.member.tipo" class="full-width form-group">
             <md-option *ngFor="let memberKind of memberKinds" [value]="memberKind.value">{{ memberKind.name }}</md-option>
         </md-select>
@@ -51,34 +56,36 @@
           <md-datepicker touchUi="true" #picker></md-datepicker>
         </md-form-field>
 
-        <div *ngIf="data.member.id && (data.member.is('titular') || data.member.is('invitado'))">
+        <div *ngIf="data.member.id && data.member.is('titular')">
             <h2 class="mat-h2">Pagos</h2>
             <div *ngIf="lastPayment">
                 <table class="table mat-elevation-z8">
                     <tr>
                         <th>Pagado hasta</th>
-                        <th>Cantidad</th>
                         <th>Fecha del pago</th>
                     </tr>
                     <tr>
                         <td>{{ lastPayment.paid_up | date:'medium' }} </td>
-                        <td>{{ lastPayment.paid_amount | currency:'MXN':true }}</td>
                         <td>{{ lastPayment.payment_date | date:'medium' }}</td>
                     </tr>
                 </table>
-                <form [formGroup]="paymentForm" (ngSubmit)="doPayment()" novalidate>
+                <form [formGroup]="paymentForm" (ngSubmit)="doPayment()" novalidate *ngIf="canPay">
                     <div class="row">
-                        <div class="col-md-4">
-                            <md-form-field class="full-width">
-                                <input mdInput placeholder="Pagado hasta" type="text" formControlName="paid_up" [formGroup]="paymentForm" [mdDatepicker]="paidUpPicker">
-                                <md-datepicker-toggle mdSuffix [for]="paidUpPicker"></md-datepicker-toggle>
-                                 <md-datepicker touchUi="true" #paidUpPicker></md-datepicker>
-                            </md-form-field>
-                        </div>
-                        <div class="col-md-4">
-                            <md-form-field class="full-width">
-                                <input mdInput placeholder="Cantidad" type="number" formControlName="paid_amount" [formGroup]="paymentForm">
-                            </md-form-field>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <md-select placeholder="Mes" class="full-width form-group" formControlName="month" [formGroup]="paymentForm">
+                                        <md-option *ngFor="let month of _months" [value]="month">{{ month }}</md-option>
+                                    </md-select>
+                                </div>
+                                <div class="col-md-6">
+                                    <md-select placeholder="Año" class="full-width form-group" formControlName="year" [formGroup]="paymentForm">
+                                        <md-option value="2017">2017</md-option>
+                                        <md-option value="2018">2018</md-option>
+                                        <md-option value="2017">2017</md-option>
+                                    </md-select>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <button md-raised-button color="primary">Registrar pago</button>

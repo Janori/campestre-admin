@@ -74,10 +74,12 @@ export class PartnersComponent implements OnInit {
                 if(member.id == null) { // CREATE
                     this._memberService.createMember(member).subscribe(
                         result => {
-                            if(result.status)
+                            if(result.status) {
+                                this.membersDatabase.addMember(new Member(result.data));
                                 this._snackBar.open('Miembro creado con éxito', 'Aceptar', {
                                     duration: 2000,
                                 });
+                            }
                             else
                                 this._snackBar.open(result.msg, 'Aceptar', {
                                     duration: 2000,

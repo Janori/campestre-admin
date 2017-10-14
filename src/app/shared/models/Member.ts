@@ -16,6 +16,14 @@ export class Member {
         GUEST: 'I'
     };
 
+    // public static status = {
+    //     A: 'ACTIVO',
+    //     PP: 'PENDIENTE DE PAGO',
+    //     D: 'DEUDOR'
+    // };
+
+    public static status = ['ACTIVO', 'PENDIENTE DE PAGO', 'DEUDOR'];
+
     constructor(obj ?: any) {
         this.id = obj && obj.id || null;
         this.nombre = obj && obj.nombre || null;

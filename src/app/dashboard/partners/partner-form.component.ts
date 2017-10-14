@@ -29,9 +29,12 @@ export class PartnerFormComponent implements OnInit {
     public filteredMembers: Observable<any[]>;
 
     public referencedMembers: any[] = [];
+    public _status: any[] = [];
 
-    private _months: string[];
+    public _months: string[];
     private _members: any[] = [];
+
+    public canPay: boolean = true;
 
     constructor(
         @Inject(MD_DIALOG_DATA) public data: any,
@@ -40,18 +43,19 @@ export class PartnerFormComponent implements OnInit {
         private _fb: FormBuilder) {
         console.log(data.member);
         this.paymentForm = this._fb.group({
-            paid_up: [null, Validators.required],
-            paid_amount: [null, Validators.required]
+            month: [null, Validators.required],
+            year: [null, Validators.required]
         });
 
         this.bloodKinds = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
-        this.subscriptionKinds = ['DUPLEX', 'FAMILIAR', 'FORANEA', 'INDIVIDUAL', 'INDIVIDUAL 50%', 'INDIVIDUAL 25-30', 'INDIVIDUAL 25-30 AL 50%', 'VERIFICAR'];
+        this.subscriptionKinds = ['DUPLEX', 'FAMILIAR', 'FORANEA', 'INDIVIDUAL', 'INDIVIDUAL 50%', 'INDIVIDUAL 25-30', 'INDIVIDUAL 25-30 AL 50%', 'VERIFICAR', 'FUTBOL', 'BALLET'];
         this.memberKinds = [
             { name: 'Titular', value: 'T'},
             { name: 'Asociado', value: 'A'}
         ];
 
         this._months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        this._status = Member.status;
     }
 
     async ngOnInit() {
@@ -85,6 +89,7 @@ export class PartnerFormComponent implements OnInit {
         this._memberService.getHistorial(this.data.member.id).subscribe(
             result => {
                 this.lastPayment = result.data;
+                this.canPay = new Date(result.data.paid_up) < new Date();
             },
             error => { console.log(error); }
         );
@@ -189,11 +194,10 @@ export class PartnerFormComponent implements OnInit {
 
         let data = {
             member_id: this.data.member.id,
-            paid_up: this.paymentForm.get('paid_up').value,
-            paid_amount: this.paymentForm.get('paid_amount').value
-        }
+            month: this.paymentForm.get('month').value,
+            year: this.paymentForm.get('year').value
+        };
 
-        data.paid_up = data.paid_up.toISOString().replace(/T.*/,'');
 
         this._memberService.doPayment(data).subscribe(
             result => {
@@ -212,7 +216,7 @@ export class PartnerFormComponent implements OnInit {
                 }
             },
             error => { console.log(error); }
-        )
+        );
 
     }
 }
