@@ -22,7 +22,7 @@ export class Member {
     //     D: 'DEUDOR'
     // };
 
-    public static status = ['ACTIVO', 'PENDIENTE DE PAGO', 'DEUDOR'];
+    public static status = ['ACTIVO', 'DEUDOR.'];
 
     constructor(obj ?: any) {
         this.id = obj && obj.id || null;

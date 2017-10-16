@@ -2,8 +2,10 @@
 <md-dialog-content>
     <!-- <form class="partner-form"> -->
 
-        <md-select placeholder="Estado" [(ngModel)]="data.member.data.status" class="full-width form-group">
-            <md-option *ngFor="let status of _status" [value]="status">{{ status }}</md-option>
+        <md-select *ngIf="!data.member.is('invitado')" placeholder="Estado" [(ngModel)]="data.member.data.status" class="full-width form-group">
+            <!-- <md-option *ngFor="let status of _status" [value]="status">{{ status }}</md-option> -->
+            <md-option value="ACTIVO">ACTIVO</md-option>
+            <md-option value="DEUDORR">DEUDOR</md-option>
         </md-select>
 
         <md-select *ngIf="data.member.is('titular') || data.member.is('asociado')" placeholder="Tipo de Miembro" [(ngModel)]="data.member.tipo" class="full-width form-group">
@@ -69,7 +71,7 @@
                         <td>{{ lastPayment.payment_date | date:'medium' }}</td>
                     </tr>
                 </table>
-                <form [formGroup]="paymentForm" (ngSubmit)="doPayment()" novalidate *ngIf="canPay">
+                <form [formGroup]="paymentForm" (ngSubmit)="doPayment()" novalidate>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="row">
@@ -82,7 +84,7 @@
                                     <md-select placeholder="Año" class="full-width form-group" formControlName="year" [formGroup]="paymentForm">
                                         <md-option value="2017">2017</md-option>
                                         <md-option value="2018">2018</md-option>
-                                        <md-option value="2017">2017</md-option>
+                                        <md-option value="2019">2019</md-option>
                                     </md-select>
                                 </div>
                             </div>
@@ -150,32 +152,32 @@
 
         <br>
         <div *ngIf="data.member.id && data.member.is('invitado')">
-            <h2 class="mat-h2">Usuarios referenciados</h2>
-            <table class="table mat-elevation-z8">
-                <tr>
-                    <th>No. Credencial</th>
-                    <th>Nombre</th>
-                    <th>Acciones</th>
-                </tr>
-                <tr *ngFor="let member of referencedMembers">
-                    <td>{{ member.data.code }}</td>
-                    <td>{{ member.nombre }}</td>
-                    <td>
-                        <button md-raised-button (click)="unsetGuestRelation(member.id)" color="warn"><md-icon class="md-24">delete</md-icon></button>
-                    </td>
-                </tr>
-            </table>
-            <br>
-            <br>
-            <form>
-                <md-form-field class="full-width">
-                    <input mdInput placeholder="Teclee nombre o no. credencial..." aria-label="Member" [mdAutocomplete]="auto" [formControl]="memberCtrl">
-                    <md-autocomplete #auto="mdAutocomplete" (optionSelected)="setGuestRelation($event)">
-                        <md-option *ngFor="let member of filteredMembers | async" [value]="member.id">
-                            <span>{{ member.nombre }}</span>
-                        </md-option>
-                    </md-autocomplete>
-                </md-form-field>
+            <h2 class="mat-h2">Registrar visita</h2>
+            <form [formGroup]="visitForm" (ngSubmit)="registerVisit()" novalidate>
+                <div class="row">
+                    <div class="col-md-12">
+                        <md-form-field class="full-width">
+                            <input mdInput placeholder="Teclee nombre o no. credencial..." aria-label="Member" [mdAutocomplete]="auto" name="member_id" formControlName="member_id" [formGroup]="visitForm" [formControl]="memberCtrl" #memberID>
+                            <md-autocomplete #auto="mdAutocomplete">
+                                <md-option *ngFor="let member of filteredMembers | async" [value]="member.id">
+                                    <span>{{ member.nombre }}</span>
+                                </md-option>
+                            </md-autocomplete>
+                        </md-form-field>
+                    </div>
+                    <div class="col-md-12">
+                        <md-form-field class="full-width">
+                            <input mdInput [mdDatepicker]="picker" placeholder="Fecha límite de visita" name="date" formControlName="date" [formGroup]="visitForm">
+                                <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
+                            <md-datepicker touchUi="true" #picker></md-datepicker>
+                        </md-form-field>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <button md-raised-button type="submit" color="primary">Registrar pago <md-icon class="md-24">done</md-icon></button>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
         <!-- <h2 class="mat-h2">Expediente</h2>

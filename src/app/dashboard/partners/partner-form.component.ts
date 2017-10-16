@@ -24,6 +24,9 @@ export class PartnerFormComponent implements OnInit {
     public lastPayment: any = null;
 
     public paymentForm: FormGroup;
+    public visitForm: FormGroup;
+
+    @ViewChild('memberID') memberID;
 
     public memberCtrl: FormControl = new FormControl();
     public filteredMembers: Observable<any[]>;
@@ -33,8 +36,6 @@ export class PartnerFormComponent implements OnInit {
 
     public _months: string[];
     private _members: any[] = [];
-
-    public canPay: boolean = true;
 
     constructor(
         @Inject(MD_DIALOG_DATA) public data: any,
@@ -47,6 +48,11 @@ export class PartnerFormComponent implements OnInit {
             year: [null, Validators.required]
         });
 
+        this.visitForm = this._fb.group({
+            member_id: [null, Validators.required],
+            date: [null, Validators.required]
+        });
+
         this.bloodKinds = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
         this.subscriptionKinds = ['DUPLEX', 'FAMILIAR', 'FORANEA', 'INDIVIDUAL', 'INDIVIDUAL 50%', 'INDIVIDUAL 25-30', 'INDIVIDUAL 25-30 AL 50%', 'VERIFICAR', 'FUTBOL', 'BALLET'];
         this.memberKinds = [
@@ -55,7 +61,7 @@ export class PartnerFormComponent implements OnInit {
         ];
 
         this._months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-        this._status = Member.status;
+        // this._status = Member.status;
     }
 
     async ngOnInit() {
@@ -89,7 +95,6 @@ export class PartnerFormComponent implements OnInit {
         this._memberService.getHistorial(this.data.member.id).subscribe(
             result => {
                 this.lastPayment = result.data;
-                this.canPay = new Date(result.data.paid_up) < new Date();
             },
             error => { console.log(error); }
         );
@@ -218,5 +223,50 @@ export class PartnerFormComponent implements OnInit {
             error => { console.log(error); }
         );
 
+    }
+
+    registerVisit = () => {
+
+
+        let data = {
+            guest_id:   this.data.member.id,
+            member_id:  this.memberID.nativeElement.value,
+            date:       this.visitForm.get('date').value,
+            days:       this._diffTime(new Date(), new Date(this.visitForm.get('date').value)),
+        };
+
+        data.date = data.date.toISOString().replace(/T.*/,'');
+        // 1st Filter
+
+        if(data.days > 2)
+            if(!confirm('La visita que estás a punto de registar es mayor a dos días, ¿tienes autorización?'))
+                return;
+
+        // 2nd Filter
+        this._memberService.checkVisits(data.guest_id).subscribe(
+            result => {
+                if(result.data >= 2)
+                    if(!confirm('Este invitado ya ha ingresado 2 o más veces este mes, ¿tienes autorización?'))
+                        return;
+
+                this._memberService.registerVisit(data.guest_id, data).subscribe(
+                    result => {
+                        this.visitForm.reset();
+                        this._snackBar.open(result.msg, 'Aceptar', {
+                            duration: 2000,
+                        });
+                    }
+                );
+
+            },
+            error => console.log(error)
+        );
+    }
+
+    _diffTime = (date1: Date, date2: Date): number => {
+        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+        return diffDays;
     }
 }

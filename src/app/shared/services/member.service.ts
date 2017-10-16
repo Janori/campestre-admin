@@ -85,4 +85,14 @@ export class MemberService extends Service {
         return this._http.get(this.url + `guests/${member_id}/hosts`,{ headers: this.headers })
                           .map(res => res.json());
     }
-}
+
+    checkVisits = (member_id: number) => {
+        return this._http.get(this.url + `guests/${member_id}/check_visits`,{ headers: this.headers })
+                          .map(res => res.json());
+    }
+
+    registerVisit = (member_id: number, data: any) => {
+        return this._http.post(this.url + `guests/${member_id}/register_visit`, data, { headers: this.headers })
+                         .map(res => res.json());
+    }
+ }

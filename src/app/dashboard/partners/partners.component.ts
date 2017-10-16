@@ -30,6 +30,8 @@ export class PartnersComponent implements OnInit {
     @ViewChild('filter') filter: ElementRef;
     @ViewChild(MdPaginator) paginator: MdPaginator;
 
+    public memberKind: string = '';
+
     constructor(
         public dialog: MdDialog,
         private _snackBar: MdSnackBar,
@@ -39,6 +41,13 @@ export class PartnersComponent implements OnInit {
     }
 
     ngOnInit() {
+        if(this._router.url.includes('socios'))
+            this.memberKind = 'socios';
+        else if(this._router.url.includes('empleados'))
+            this.memberKind = 'empleados';
+        else
+            this.memberKind = 'invitados';
+
         this.dataSource = new MembersDataSource(this.membersDatabase, this.paginator);
         Observable.fromEvent(this.filter.nativeElement, 'keyup')
             .debounceTime(150)
