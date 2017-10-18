@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { Service } from './Service';
+import { IService } from './iservice';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
-export class MemberService extends Service {
+export class MemberService extends Service implements IService {
 
     constructor(private _http: Http) {
         super();
@@ -94,5 +95,11 @@ export class MemberService extends Service {
     registerVisit = (member_id: number, data: any) => {
         return this._http.post(this.url + `guests/${member_id}/register_visit`, data, { headers: this.headers })
                          .map(res => res.json());
+    }
+
+    getData = (query: string) => {
+        let url = this.url + lscache.get('table') + query;
+        console.log("querying: " + url);
+        return this._http.get(url, { headers: this.headers });
     }
  }

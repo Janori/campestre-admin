@@ -16,6 +16,11 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 
+import { JtableDirective } from '../../shared/directives/jtable.directive';
+import { NgModel } from '@angular/forms';
+import { Subject } from 'rxjs/Subject';
+
+import {} from '@types/lscache';
 
 @Component({
   selector: 'app-partners',
@@ -26,18 +31,53 @@ export class PartnersComponent implements OnInit {
     public displayedColumns = ['userId', 'code', 'name', 'phone', 'email', 'details'];
     public dataSource: MembersDataSource;
     public membersDatabase: MembersDatabase;
+    public resultsPerPage: number;
 
     @ViewChild('filter') filter: ElementRef;
     @ViewChild(MdPaginator) paginator: MdPaginator;
 
     public memberKind: string = '';
 
+    @ViewChild('tbMember', { read: JtableDirective}) tb:JtableDirective;
+    @ViewChild('txtSearch') ts;
+    values:number[] = [5,10,20,50,100,200,500];
+
+    text:string = "";
+
+    textChanged(e){
+      this.modelChanged.next(e);
+      //this.tb.query(e);
+    }
+
+
+    model: string;
+    modelChanged: Subject<string> = new Subject<string>();
+
+
     constructor(
         public dialog: MdDialog,
         private _snackBar: MdSnackBar,
         private _router:Router,
         private _memberService: MemberService) {
-            this.membersDatabase = new MembersDatabase(this._memberService, this._router.url);
+            if(this._router.url.includes('socios'))
+                lscache.set('table', 'members');
+            else if(this._router.url.includes('empleados'))
+                lscache.set('table', 'employees');
+            else
+                lscache.set('table', 'guests');
+            this.modelChanged
+                .debounceTime(300) // wait 300ms after the last event before emitting last event
+                .distinctUntilChanged() // only emit if value is different from previous value
+                .subscribe(model =>{
+                    this.tb.query(model);
+                });
+    }
+
+    showMore(){
+      this.tb.resultsPerPage = 30;
+    }
+    changed(){
+      this.tb.resultsPerPage = this.resultsPerPage;
     }
 
     ngOnInit() {
@@ -47,15 +87,6 @@ export class PartnersComponent implements OnInit {
             this.memberKind = 'empleados';
         else
             this.memberKind = 'invitados';
-
-        this.dataSource = new MembersDataSource(this.membersDatabase, this.paginator);
-        Observable.fromEvent(this.filter.nativeElement, 'keyup')
-            .debounceTime(150)
-            .distinctUntilChanged()
-            .subscribe(() => {
-              if (!this.dataSource) { return; }
-              this.dataSource.filter = this.filter.nativeElement.value;
-            });
     }
 
     openDialog = (member?: Member): void => {
@@ -84,7 +115,8 @@ export class PartnersComponent implements OnInit {
                     this._memberService.createMember(member).subscribe(
                         result => {
                             if(result.status) {
-                                this.membersDatabase.addMember(new Member(result.data));
+                                // this.membersDatabase.addMember(new Member(result.data));
+                                this.tb.query();
                                 this._snackBar.open('Miembro creado con éxito', 'Aceptar', {
                                     duration: 2000,
                                 });

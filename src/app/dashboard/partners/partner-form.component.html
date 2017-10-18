@@ -48,7 +48,7 @@
             <em>No hay huella resgistrada para este usuario aún. &nbsp;</em>
         </div>
 
-        <md-select placeholder="Tipo de membresía" [(ngModel)]="data.member.data.tipo_membresia" class="full-width">
+        <md-select *ngIf="!data.member.is('invitado')" placeholder="Tipo de membresía" [(ngModel)]="data.member.data.tipo_membresia" class="full-width">
             <md-option *ngFor="let subscriptionKind of subscriptionKinds" [value]="subscriptionKind">{{ subscriptionKind }}</md-option>
         </md-select>
 

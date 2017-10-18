@@ -7,6 +7,11 @@ import { routing, appRoutingProviders} from './app.routing';
 import { AuthService } from './shared/services/auth.service';
 import { AuthGuard } from './shared/security/auth.guard';
 
+import { JtableDirective } from './shared/directives/jtable.directive';
+import { JcolumnDirective } from './shared/directives/jcolumn.directive';
+import { TableComponent } from './shared/components/table/table.component';
+import { Paginator1Component } from './shared/components/paginator1/paginator1.component';
+
 import { MaterialModule, MdNativeDateModule, MD_DATE_FORMATS} from '@angular/material';
 import { LOCALE_ID } from '@angular/core';
 
@@ -30,7 +35,9 @@ import { LoginComponent } from './login/login.component';
     PartnerFormComponent,
     PoolComponent,
     NotificationsComponent,
-    LoginComponent
+    LoginComponent,
+    JtableDirective,
+    JcolumnDirective,
   ],
   entryComponents: [
       PartnerFormComponent

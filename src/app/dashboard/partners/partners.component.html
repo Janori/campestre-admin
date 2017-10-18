@@ -1,53 +1,48 @@
 <div class="partner-serach">
     <!-- <md-icon>search</md-icon> -->
     <md-form-field class="full-width">
-        <input mdInput placeholder="Buscar {{ memberKind }}..." #filter>
+        <input mdInput type="text" #txtSearch [(ngModel)]="text" (ngModelChange)="textChanged($event)" placeholder="Buscar {{ memberKind }}...">
     </md-form-field>
+    <md-select placeholder="Resultados por pagina..." class="full-width form-group" (change)="changed()" [(ngModel)]="resultsPerPage">
+        <md-option *ngFor="let value of values" [value]="value">{{ value }}</md-option>
+        <md-option value="DEUDORR">DEUDOR</md-option>
+    </md-select>
 </div>
+
 <div class="main-container">
-    <md-table #table [dataSource]="dataSource" class="mat-elevation-z8">
-
-    <ng-container mdColumnDef="userId">
-        <md-header-cell *mdHeaderCellDef> ID </md-header-cell>
-        <md-cell *mdCellDef="let row"> {{ row.id }} </md-cell>
-    </ng-container>
-
-    <ng-container mdColumnDef="code">
-        <md-header-cell *mdHeaderCellDef> No. Credencial </md-header-cell>
-        <md-cell *mdCellDef="let row"> {{ row.info.code }} </md-cell>
-    </ng-container>
-
-    <ng-container mdColumnDef="name">
-        <md-header-cell *mdHeaderCellDef> Nombre </md-header-cell>
-        <md-cell *mdCellDef="let row"> {{ row.nombre }} </md-cell>
-    </ng-container>
-
-    <ng-container mdColumnDef="phone">
-        <md-header-cell *mdHeaderCellDef> Teléfono </md-header-cell>
-        <md-cell *mdCellDef="let row"> {{ row.data.telefono }} </md-cell>
-    </ng-container>
-
-    <ng-container mdColumnDef="email">
-        <md-header-cell *mdHeaderCellDef> Email </md-header-cell>
-        <md-cell *mdCellDef="let row"> {{ row.data.email }} </md-cell>
-    </ng-container>
-
-    <ng-container mdColumnDef="details">
-       <md-header-cell *mdHeaderCellDef> Acciones </md-header-cell>
-       <md-cell *mdCellDef="let row"> <button md-raised-button (click)="openDialog(row)" color="primary">Editar <md-icon class="md-24">edit</md-icon></button></md-cell>
-    </ng-container>
-
-
-    <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
-    <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
- </md-table>
-
- <md-paginator #paginator
-                [length]="membersDatabase.data.length"
-                [pageIndex]="0"
-                [pageSize]="25"
-                [pageSizeOptions]="[5, 10, 25, 100]">
-  </md-paginator>
+    <!-- ['userId', 'code', 'name', 'phone', 'email', 'details']  -->
+    <table #tbMember appJtable class="table table-hover mat-elevation-z8"
+           [resultsPerPage]="20"
+           [service]="_memberService"
+           [model]="Member">
+      <thead>
+        <tr>
+          <th appJcolumn
+              [name]="'id'">
+              #
+          </th>
+          <th>
+            <i class="fa fa-chevron-down"></i>
+            No. Credencial
+          </th>
+          <th appJcolumn
+              [name]="'lname'">
+              Nombre
+          </th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="tb.data != undefined">
+        <tr *ngFor="let row of tb.data">
+          <th scope="row">{{ row.id }}</th>
+          <td>{{ row.info.code }}</td>
+          <td>{{ row.nombre }}</td>
+          <td>{{ row.data.status }}</td>
+          <td><button md-raised-button (click)="openDialog(row)" color="primary">Editar <md-icon class="md-24">edit</md-icon></button></td>
+        </tr>
+      </tbody>
+    </table>
   <button md-fab class="btt-btn" color="primary" (click)="openDialog()">
       <md-icon class="md-24">add</md-icon>
   </button>
