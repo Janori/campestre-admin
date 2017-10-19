@@ -5,7 +5,7 @@
         <md-select *ngIf="!data.member.is('invitado')" placeholder="Estado" [(ngModel)]="data.member.data.status" class="full-width form-group">
             <!-- <md-option *ngFor="let status of _status" [value]="status">{{ status }}</md-option> -->
             <md-option value="ACTIVO">ACTIVO</md-option>
-            <md-option value="DEUDORR">DEUDOR</md-option>
+            <md-option value="DEUDOR">DEUDOR</md-option>
         </md-select>
 
         <md-select *ngIf="data.member.is('titular') || data.member.is('asociado')" placeholder="Tipo de Miembro" [(ngModel)]="data.member.tipo" class="full-width form-group">
