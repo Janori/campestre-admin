@@ -3,5 +3,14 @@
     <h1>¡Bienvenido!</h1>
     <p>A través de este panel usted podrá gestionar el flujo de miembro de miembros dentro del club.</p>
     <p>Seleccione cualquiera de la opciones de la izquieda para comenzar</p>
+    <hr>
+    <h2>Generador de reportes</h2>
+        <div class="row" style="text-align: center;">
+            <div class="col-md-3"><button md-raised-button color="primary" (click)="generateReport('active_members')">Miembros Activos</button></div>
+            <div class="col-md-3"><button md-raised-button color="primary" (click)="generateReport('pp_members')">Miembros Pendientes de Pago</button></div>
+            <div class="col-md-3"><button md-raised-button color="primary" (click)="generateReport('debtors_members')">Miembros Deudores</button></div>
+            <div class="col-md-3"><button md-raised-button color="primary" (click)="generateReport('down_members')">Miembros Baja</button></div>
+        </div>
+    <hr>
     <small>IT Networks de México &copy; 2017</small>
 </section>
