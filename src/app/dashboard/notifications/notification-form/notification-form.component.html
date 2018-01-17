@@ -1,0 +1,30 @@
+<h2 md-dialog-title>Formulario de notificación</h2>
+<md-dialog-content>
+    <!-- <form [formGroup]="notificationAppForm" (ngSubmit)="storeAppNotification()"> -->
+    <div class="row">
+        <div class="col-md-9">
+            <md-form-field class="full-width">
+                <input mdInput [(ngModel)]="data.notification.title" placeholder="Mensaje para usuarios">
+            </md-form-field>
+
+            <md-form-field class="full-width">
+                <textarea mdInput [(ngModel)]="data.notification.description" placeholder="Cuerpo de la noticia"></textarea>
+            </md-form-field>
+            <br>
+            <label>Imagen principal: </label>
+            <input type="file" (change)="fileChange($event)">
+            <div *ngIf="data.notification.url" class="img-holder">
+                <img [src]="data.notification.url" class="img img-thumbnail" >
+            </div>
+            <div *ngIf="!data.notification.url">
+                <p><b>NO SE HA SELECCIONADO NINGUNA IMAGEN</b></p>
+            </div>
+        </div>
+    </div>
+    <!-- </form> -->
+</md-dialog-content>
+<md-dialog-actions class="dialog-buttons">
+    <button md-button [md-dialog-close]="false">Cancelar</button>
+    <!-- Can optionally provide a result for the closing dialog. -->
+    <button md-button [md-dialog-close]="true" color="primary">Aceptar</button>
+</md-dialog-actions>

@@ -1,2 +1,61 @@
 <h2 class="mat-h2">Comunicados</h2>
 <p>Envía notificaciones a los socios </p>
+
+<form [formGroup]="notificationPushForm" (ngSubmit)="sendPushNotification()">
+    <div class="row">
+        <div class="col-md-9">
+            <md-form-field class="full-width">
+                <input mdInput placeholder="Mensaje para usuarios" formControlNam="text" [formGroup]="notificationPushForm">
+            </md-form-field>
+        </div>
+        <div class="col-md-9">
+            <button md-raised-button color="primary" class="pull-right">Enviar</button>
+        </div>
+    </div>
+</form>
+
+<md-divider></md-divider>
+
+<h2 class="mat-h2">Noticias</h2>
+<p>Registra una noticia para mostrar en la aplicación </p>
+
+<div class="notification-serach">
+    <md-select placeholder="Resultados por pagina..." class="full-width form-group" (change)="changed()" [(ngModel)]="resultsPerPage">
+        <md-option *ngFor="let value of values" [value]="value">{{ value }}</md-option>
+    </md-select>
+</div>
+
+<div class="main-container">
+    <!-- ['userId', 'code', 'name', 'phone', 'email', 'details']  -->
+    <table #tbMember appJtable class="table table-hover mat-elevation-z8"
+           [resultsPerPage]="20"
+           [service]="_notificationService"
+           [model]="'Notification'">
+      <thead>
+        <tr>
+          <th appJcolumn
+              [name]="'id'">
+              #
+          </th>
+          <th>
+            <i class="fa fa-chevron-down"></i>
+            Descripción corta
+          </th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="tb.data != undefined">
+        <tr *ngFor="let row of tb.data">
+          <th scope="row">{{ row.id }}</th>
+          <td>{{ row.description }}</td>
+          <td>
+              <button md-raised-button (click)="openDialog(row)" color="primary">Editar <md-icon class="md-24">edit</md-icon></button>
+              <button md-raised-button (click)="deleteNotification(row)" color="warn">Eliminar <md-icon class="md-24">delete</md-icon></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  <button md-fab class="btt-btn" color="primary" (click)="openDialog()">
+      <md-icon class="md-24">add</md-icon>
+  </button>
+</div>

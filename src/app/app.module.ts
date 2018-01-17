@@ -25,6 +25,7 @@ import { PartnerFormComponent } from './dashboard/partners/partner-form.componen
 import { PoolComponent } from './dashboard/pool/pool.component';
 import { NotificationsComponent } from './dashboard/notifications/notifications.component';
 import { LoginComponent } from './login/login.component';
+import { NotificationFormComponent } from './dashboard/notifications/notification-form/notification-form.component';
 
 @NgModule({
   declarations: [
@@ -38,9 +39,11 @@ import { LoginComponent } from './login/login.component';
     LoginComponent,
     JtableDirective,
     JcolumnDirective,
+    NotificationFormComponent,
   ],
   entryComponents: [
-      PartnerFormComponent
+      PartnerFormComponent,
+      NotificationFormComponent,
   ],
   imports: [
     BrowserModule,

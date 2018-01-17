@@ -58,7 +58,7 @@ export class JtableDirective implements AfterContentInit{
       this.data = [];
       // parsingToModel
       response.forEach(element => {
-          this.data.push(new Models['Member'](element));
+          this.data.push(new Models[this.model](element));
       });
     });
   }
